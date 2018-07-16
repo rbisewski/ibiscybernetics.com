@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>2017-02-04: exploring the Solus Linux distro</h1>
+
+            <br>
+
+            <p>
+               I've been a Linux user for quite a number of years now, and
+	       am always readily impressed by the volume of Linux distros that
+	       rise and fall.
+            </p>
+
+            <p>
+	       For the longest time I was using
+               <a href="https://www.slackware.com">Slackware</a>. However,
+	       at least for a while, Patrick Volkerding and the other
+	       Slackware developers seemed to have been publishing
+	       far fewer releases, giving me the impression that they were
+	       winding down or had moved on to other projects. This
+	       was mostly between 2009-2015 I recall, but I think they've
+	       since restarted development. Good luck to them I suppose,
+	       yet I have since moved on.
+            </p>
+
+            <p>
+	       I played around with 
+	       <a href="https://www.opensuse.org">openSuSE</a> after leaving
+	       the Slackware camp. Mainly this was due to the more bleeding
+	       edge functionality, notably on the graphics side of things.
+	       The very early Gallium variants of Mesa libs were especially
+	       fun, often breaking but *still* providing a better experience
+	       than the pre-existing drivers.
+            </p>
+               
+            <p>
+               Regarding other distros, 
+	       <a href="https://getfedora.org">Fedora</a> was not bad in my
+	       opinion, but it never really caught my attention. I can't
+	       recommend it outside the enterprise-market variants (e.g.
+	       CentOS / RHEL and the like).
+            </p>
+               
+            <p>
+	       Eventually due to the popularity of
+	       <a href="https://ubuntu.com">Ubuntu</a>, it only made sense to
+	       give it a shot. I had tested it before in the past, but it
+	       never seemed it exciting. However, the ease of installing and
+	       updating Radeon graphics drivers was nice, given the mess that
+	       the fglrx driver had been for a number of years.
+            </p>
+               
+            <p>
+	       On a related note, the new amdgpu and amdgpu-pro Radeon
+	       drivers in late 2016 have been quite excellent, so I'll
+	       admit the other Linux distros are looking better again.
+            </p>
+
+            <p>
+	       Personally, I have not done much in the way of distro hopping
+               lately, but since my reasons for sticking with Ubuntu have
+	       gone away, I figured I would try
+	       <a href="https://solus-project.com">Solus</a>. The neatly
+	       designed GUI and rolling distro aspect of it intrigued me,
+	       so I decided to give it a shot.
+            </p>
+
+            <p>
+	       To give an overview of this particular distro, it seems like
+	       it utilizes GTK3 libraries for the window-manager, which is
+	       called "Budgie" and borrows a little from Gnome and MATE, but
+	       is otherwise an entirely different design. The package
+	       manager is called "eopkg" which is derived from the
+	       <a href="https://en.wikipedia.org/wiki/Pardus_(operating_system)#PiSi_package_management">PiSi</a>
+               package manager in the now abandonned distro of Pardus.
+	       Nothing too special on the functionality side of things,
+	       but the LZMA compression is a nice touch.
+            </p>
+
+            <p>
+	       Not much in the way of guides currently on the internet for
+	       this distro, and the overall structure of the OS is a bit
+	       different from standard deb / rpm distros so I think a
+	       brief overview of some of the commands is in order.
+            </p>
+
+            <p class="grey_monospace">
+	       #
+	       <br>
+	       # Search for a given package
+	       <br>
+	       #
+	       <br>
+               eopkg sr package-name
+	       <br>
+
+	       <br>
+	       #
+	       <br>
+	       # Install a given package
+	       <br>
+	       #
+	       <br>
+               eopkg it package-name 
+	       <br>
+	       <br>
+	       #
+	       <br>
+	       # Remove a given package
+	       <br>
+	       #
+	       <br>
+               eopkg rm package-name 
+	       <br>
+	       <br>
+	       #
+	       <br>
+	       # Admin access the software centre
+	       <br>
+	       #
+	       <br>
+               sudo solus-sc
+	       <br>
+	       <br>
+	       #
+	       <br>
+	       # Examine the current boot settings 
+	       <br>
+	       #
+	       <br>
+               sudo bootctl status
+            </p>
+
+            <p>
+	       In addition, it seems that Solus is one of the few Linux
+	       distros that relies solely on the systemd boot subsystem,
+	       via a fork of gummiboot called 'goofiboot'. In order to
+               customize the boot menu, rather than update-grub, the EFI
+	       loader file needs to be editted. This can be accomplished
+	       as follows:
+            </p>
+
+            <p class="grey_monospace">
+               sudo vi /boot/efi/loader/loader.conf
+            </p>
+
+            <p>
+	       A few other interesting aspects of this OS set it apart from
+	       the current crop of Linux GUIs, so I figure going over them
+	       quickly might be worthwhile to anyone reading:
+	       <ul>
+	          <li>
+		     <span>
+                     To adjust the position of the top bar or customize
+		     the theme, click on the "door" icon at the right-most
+		     to access the Raven control panel.
+		     </span>
+	          </li>
+	          <br>
+	          <li>
+		     <span>
+		     To view alerts or system updates, click on the "bell"
+		     icon at the right-most part of the screen.
+		     </span>
+	          </li>
+	          <br>
+	          <li>
+		     <span>
+		     To install some of the third-party software, you'll
+		     need to do a `sudo solus-sc` to force it into admin
+		     mode. Otherwise occasionally the "Requires Auth"
+		     dialog doesn't trigger as one might expect.
+		     </span>
+	          </li>
+	       </ul>
+            </p>
+
+            <p>
+	       Finally, this distro is a bit on the minimalist side, so
+	       be warned that you can expect fewer repos and packages.
+	       Probably less support as well, so at this time I'd recommend
+	       it as a sort of end-user distro, preferly a user with more
+	       experienced as it is, after-all, a rolling distro (e.g.
+	       potential package requirements breakage, missing symlinks,
+	       and more overall weirdness).
+            </p>
+
+            <p>
+	       The above noted, I am at this time mostly pleased with the
+	       current level of functionality in Solus. Hopefully it
+	       continues to remain popular, as I rather like the idea of a
+	       fast rolling desktop OS.
+            </p>
+            <br>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>2017-05-13: getting started with zsh</h1>
+
+            <br>
+
+            <p>
+                Quite a few years have passed since I've used csh or the
+                korn shell. The modern Linux distro seems to favour the bash
+                shell, and it has become as ubiquitous as the operating
+                system itself. Perhaps for good reason, it was the original
+                GNU alternative to the bourne shell.
+            </p>
+
+            <p>
+                As any righteous disciple of the technology will tell you,
+                productivity is key to any working environment. Plus crufty
+                code that leads to <a
+                href="https://en.wikipedia.org/wiki/Shellshock_(software_bug)">
+                flaws</a> or problems is an everpresent concern. Are there
+                maybe alternatives worth considering?
+            </p>
+
+            <p>
+                One in particular, <a href="https://fishshell.com">fish</a>,
+                seemed interesting, but after a short discussion with some
+                collegues, they mentioned <a href="www.zsh.org">zsh</a>.
+                Admittedly, I wasn't immediately convinced to try it,
+                however with several Google searches it appeared that a
+                very large number of users swear by it. So why not give it
+                a spin?
+            </p>
+
+            <p>
+                Since we need to overcome the inertia of bash, a bit of
+                excitement is needed. Gander at the flashy and illustrious
+                prompt themes.
+            </p>
+
+            <p class="grey_monospace">
+                prompt -p
+            </p>
+
+            <p>
+                Feels good? Bland shells tend to be a bit of bore and
+                I do like the elite2 theme, but each to his own. The
+                prompt choice can be made permanent by adding the following
+                to the .zshrc file:
+            </p>
+
+            <p class="grey_monospace">
+                #
+                <br>
+                # Prompt settings
+                <br>
+                #
+                <br>
+                autoload -Uz promptinit
+                <br>
+                promptinit
+                <br>
+                prompt elite2 blue
+            </p>
+
+            <p>
+                Like bash, the zsh allows for a customization of the
+                individual components. Doing so is easy, simply add a
+                zstyle after autoloading any given part of zsh. In a
+                similar vien, for the command completion, I used the
+                below settings:
+            </p>
+
+            <p class="grey_monospace">
+                #
+                <br>
+                # Command completion settings
+                <br>
+                #
+                <br>
+                autoload -U compinit
+                <br>
+                compinit
+                <br>
+                zstyle ':completion:*' menu select
+                <br>
+                zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
+                <br>
+                zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
+                <br>
+                setopt COMPLETE_ALIASES
+            </p>
+
+            <p>
+                Now bash can recall commands by means of Ctrl-r, but Zsh can
+                also quick recall recently typed commands upon typing a
+                letter or two and pressing the up/down arrow. Setting it up
+                is harder but definitely recommended, since it can save
+                you potentially a couple Ctrl-r keystrokes during the ol'
+                daily grind.
+            </p>
+
+            <p class="grey_monospace">
+                #
+                <br>
+                # Command history options
+                <br>
+                #
+                <br>
+                export HISTSIZE=2000
+                <br>
+                export HISTFILE="$HOME/.history"
+                <br>
+                export SAVEHIST=$HISTSIZE
+                <br>
+                setopt hist_ignore_all_dups
+                <br>
+                <br>
+                #
+                <br>
+                # Quick command recall
+                <br>
+                #
+                <br>
+                autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+                <br>
+                zle -N up-line-or-beginning-search
+                <br>
+                zle -N down-line-or-beginning-search
+                <br>
+                <br>
+                [[ -n "$key[Up]"   ]] &amp;&amp; bindkey -- "$key[Up]"   up-line-or-beginning-search
+                <br>
+                [[ -n "$key[Down]" ]] &amp;&amp; bindkey -- "$key[Down]" down-line-or-beginning-search
+                <br>
+            </p>
+
+            <p>
+                If you recently typed some long and painfully easy to
+                forget command, typing the first few letters of it and
+                pressing the up arrow will immediately recall it. Neat,
+                eh?
+            </p>
+
+            <p>
+                Yet the real beauty of zsh is the autocompletion. The bash
+                variant is rather tab-tastic; to get the path of a greatly
+                nested directory quite a few tab presses are required. With
+                zsh you need only fill out the first few letters like so:
+            </p>
+
+            <p class="grey_monospace">
+                cd /u/s/v/a/
+            </p>
+
+            <p>
+                After a single tab press, zsh will convert it to the
+                following:
+            </p>
+
+            <p class="grey_monospace">
+                cd /usr/share/vim/addons/
+            </p>
+
+            <p>
+                Presto! Your directory path is completely filled out. Quite
+                the timesaver on very long directory paths. For command
+                completion, simply start entering a command like so:
+            </p>
+
+            <p class="grey_monospace">
+                sndfile- 
+            </p>
+
+            <p>
+                The completion settings mentioned earlier set it to the
+                'menu' selection mode. So after a simple tab stroke the
+                user is presented with a list akin to the below.
+            </p>
+
+            <p class="grey_monospace">
+                sndfile-
+                <br>
+                <u>external command</u>
+                <br>
+                sndfile-cmp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sndfile-deinterleave
+                sndfile-metadata-get&nbsp;sndfile-regtest
+                <br>
+                sndfile-concat&nbsp;&nbsp;sndfile-info&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;sndfile-metadata-set&nbsp;sndfile-resample
+                <br>
+                sndfile-convert&nbsp;sndfile-interleave&nbsp;&nbsp;
+                sndfile-play&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                sndfile-salvage
+            </p>
+
+            <p>
+                Tab again, and then use the arrow keys to select the
+                desired choice. Simply enough, and elegant for dealing with
+                many different commands at once.
+            </p>
+
+            <p>
+                Zsh supports the recursive nested file handling natively,
+                so if you have a sudden need to view all of the header
+                files in a given location, you need only type:
+            </p>
+
+            <p class="grey_monospace">
+                ls /usr/include/**/*.h
+            </p>
+
+            <p>
+                Afterwards you will be presented with a list of every
+                header present in every folder and subfolder and subfolder
+                and so on.
+            </p>
+
+            <p>
+                Also worth noting is that zsh contains a number of useful
+                plugins. One of the fancier official plugins is the syntax
+                highlighting. Go ahead an enable it in your zshrc:
+            </p>
+
+            <p class="grey_monospace">
+                source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+            </p>
+
+            <p>
+                Try and type a command. Wrong command spellings are
+                highlighted red whilst correct command spellings are green.
+                Certainly helps with those tricky spellings and makes the
+                console a bit more Christmas. What's not to love?
+            </p>
+
+            <p>
+                That covers my take on zsh, and arguably, it does have much
+                to offer the average Linux developer or administrator.
+                Doubly so considering much of this functionality is present
+                without the usual bash hacks or elongated .bashrc files.
+            </p>
+                
+            <p>
+                Maybe at some later date I might consider a further look
+                at zsh functionality, or potentially give the fish shell a
+                chance if I get enough people asking about it.
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>

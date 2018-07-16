@@ -1,0 +1,194 @@
+/* Spread the galaxy far and wide. */
+body {
+    background-image: url("img/site_background.png");
+}
+
+/* Controls the title style. */
+#Main {
+    padding-top: 40px;
+    text-align: center;
+}
+
+/* Centre placeholder */
+#centre_placeholder {
+    text-align: center;
+}
+
+/* Centre placeholder */
+#submenu {
+    margin: 30px auto;
+    padding-bottom: 200px;
+    text-align: center;
+    width: 800px;
+}
+
+/* Software Button */ 
+#submenu #software_btn {
+    background-image: url("img/software_button_off.png");
+    display: block;
+    float: left;
+    height: 72px;
+    margin-right: 60px;
+    width: 214px;
+}
+#submenu #software_btn:hover {
+    background-image: url("img/software_button_on.png");
+}
+
+/* Artwork Button */ 
+#submenu #artwork_btn {
+    background-image: url("img/artwork_button_off.png");
+    display: block;
+    float: left;
+    height: 72px;
+    margin-right: 60px;
+    width: 214px;
+}
+#submenu #artwork_btn:hover {
+    background-image: url("img/artwork_button_on.png");
+}
+
+/* Contact Button */ 
+#submenu #contact_btn {
+    background-image: url("img/contact_button_off.png");
+    display: block;
+    float: left;
+    height: 72px;
+    width: 214px;
+}
+#submenu #contact_btn:hover {
+    background-image: url("img/contact_button_on.png");
+}
+
+/* Scrap inbetween the menu and the content sections */
+#space_scrap {
+    background-image: url("img/space_scrap.png");
+    height: 900px;
+    margin: 0 auto;
+    text-align: center;
+    width: 1120px;
+}
+
+/* Software Section styles */
+#Software {
+    margin: 20px auto;
+    padding-top: 5px;
+    text-align: center;
+    width: 1029px;
+}
+#Software .centre_middle {
+    padding-top: 30px;
+    height: 913px;
+}
+
+/* Artwork Section styles */
+#Artwork {
+    margin: 20px auto;
+    padding-top: 5px;
+    text-align: center;
+    width: 1029px;
+}
+#Artwork .centre_middle {
+    padding-top: 30px;
+    height: 849px;
+}
+
+
+/* Contact Section styles */
+#Contact {
+    margin: 20px auto;
+    padding-top: 5px;
+    text-align: center;
+    width: 1029px;
+}
+#Contact .centre_middle {
+    padding-top: 30px;
+    height: 219px;
+}
+
+
+/* Styles for the centre section appendages */
+.centre_software_appendage {
+    background-image: url("img/software_button_on_appendage.png");
+    float: left;
+    height: 97px;
+    width: 214px;
+}
+
+.centre_artwork_appendage {
+    background-image: url("img/artwork_button_on_appendage.png");
+    float: left;
+    height: 97px;
+    width: 214px;
+}
+
+.centre_contact_appendage {
+    background-image: url("img/contact_button_on_appendage.png");
+    float: left;
+    height: 97px;
+    width: 214px;
+}
+
+/* Styles for the centre elements */
+.centre_back_to_top {
+    background-image: url("img/back_to_top_button.png");
+    display: block;
+    float: right;
+    height: 97px;
+    width: 73px;
+}
+
+.centre_back_to_top:hover {
+    background-image: url("img/back_to_top_button_on.png");
+}
+
+.centre_appendage {
+    height: 97px;
+    margin-top: 200px;
+    width: 1029px;
+}
+
+.centre_top {
+    background-image: url("img/centre_top.png");
+    height: 172px;
+    width: 1029px;
+}
+
+.centre_middle {
+    background-image: url("img/centre_middle.png");
+    height: 126px;
+    width: 1029px;
+}
+.centre_middle #github_repo_link {
+    display: block;
+    margin-top: 110px;
+}
+
+.centre_bottom {
+    background-image: url("img/centre_bottom.png");
+    height: 175px;
+    width: 1029px;
+}
+
+/* Displays the Contact Email Address */
+.email_section {
+    text-align: left;
+    width: 816px;
+}
+.email_address_link {
+    display: block;
+    height: 49px;
+    margin-top: 40px;
+    width: 669px;
+}
+
+/* Padding to Central Image Content */
+.padding_left_95px {
+   padding-left: 95px;
+}
+
+/* Coming soon... */
+#coming_soon {
+    padding-top: 20px;
+    text-align: center;
+}

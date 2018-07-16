@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>2018-06-16: crafting glyphs with FontForge</h1>
+
+            <br>
+
+            <p>
+                As an avid opensource user, I tend to do my work exclusively
+                on Linux for many years now, where the software tends to
+                be both libre and open. This means that there is quite a
+                large volume of programs and applications which are
+                fairly capable and competitively priced; i.e. free.
+            </p>
+
+            <p>
+                Recently I was curious about font design, and decided to
+                create my own. Years ago I recalled using
+                <a href="https://fontforge.github.io">FontForge</a>,
+                so it became my first choice.
+            </p>
+
+            <p>
+                A quick peek at the man page reveals all of the supported
+                formats:
+            </p>
+
+            <p class="grey_monospace">
+                The  program  fontforge  allows  you to create and modify
+                font files, accepting input in the following formats (with
+                associated file extensions appearing in parentheses).
+                <br>
+                <br>
+                * Glyph Bitmap Distribution (.bdf)
+                <br>
+                <br>
+                * Macintosh resource fonts (.dfont, .bin, .hqx)
+                <br>
+                <br>
+                * OpenType (.otf)
+                <br>
+                <br>
+                * fontforge spline font database (.sfd)
+                <br>
+                <br>
+                * POSTSCRIPT, which includes:
+                <br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o ASCII format (.pfa)
+                <br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o Binary format (.pfb)
+                <br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o CID-keyed fonts,
+                Adobe convention primarily for Asian characters (.cid, .otf)
+                <br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o POSTSCRIPT Type 0 (.ps)
+                <br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o POSTSCRIPT Type 3 (.ps)
+                <br>
+                <br>
+                * Scaleable vector graphics fonts (.svg)
+                <br>
+                <br>
+                * TeX bitmap (.pk)
+                <br>
+                <br>
+                * TrueType (.ttf, .ttc)
+                <br>
+                <br>
+                * X11 bitmap (.pcf)
+            </p>
+
+            <p>
+               So chances are whatever format that is of interest to
+               you is likely supported, whether TrueType font or bitmap font
+               or SVG font.
+            </p>
+               
+            <p>
+               Upon running the program, the end-user is presented with the
+               following GUI:
+            </p>
+
+            <img src="2018-06-16/01.png" />
+
+            <p>
+                Admittedly it has began to show its age. I still remember
+                that old GUI from the very early 2000s and it has not
+                changed too much over the years. Nonetheless, it is one of
+                the more feature-rich opensource apps. Those familiar with
+                GIMP or other such tools will feel at home after a short
+                while.
+            </p>
+
+            <p>
+                To create a new font, press the "New" button at the bottom,
+                otherwise browse and open an existing font. In this case,
+                we want to start off with a brand new font. Doing so
+                displays the following screen:
+            </p>
+
+            <img src="2018-06-16/02.png" />
+
+            <p>
+                A bit confusing at first, however, each of those slots is
+                an entry for a typographical "glyph". By default, new fonts
+                created are set to ISO standard
+                <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-1">Latin-1</a>,
+                which actually covers a broad range of non-Asian
+                characters and it applies to most of Western Europe and
+                Scandinavia; though some languages like Polish miss out.
+            </p>
+
+            <p>
+                That said, many other styles are supported, including Unicode
+                fonts, though this tutorial will stick to Latin-1 for the
+                sake of simplicity.
+            </p>
+
+            <p>
+                To start drawing, click on one of the [X] boxes below the
+                glyph of choice, for example T in this case. Upon doing so
+                the following screen will appear:
+            </p>
+
+            <img src="2018-06-16/03.png" />
+
+            <p>
+                A lack of text labels means that the beginning is just the
+                sweet, sweet learning curve. In general, the icons on the
+                left-hand-side allow for the drawing of shapes, polygons,
+                curves, bezier forms and vertices. At the bottom-left corner
+                there are 3 checkboxes to switch the guide, foreground or
+                background to on-off.
+            </p>
+                
+            <p>
+                Quite a few additional options are available via the
+                drop-down menu, including bitmap glyphs, width setting
+                and bearings. Initially probably only the <i>Element->Font
+                Info</i> and <i>Element->Glyph Info</i> are worth pointing
+                out since there the font can be renamed and metadata can be
+                editted.
+            </p>
+
+            <img src="2018-06-16/04.png" />
+
+            <p>
+                Going back to the glyph draw screen again, of note is the
+                largest square in the middle, surrounded by guide levels.
+                This is where the character needs to placed. Let's start
+                off with a simple polygon using the rectangle tool. Click
+                the small blue rectangle button, and draw out two adjacent 
+                shapes in the form of a T as demostrated below.
+            </p>
+
+            <img src="2018-06-16/05.gif" />
+
+            <p>
+                Note that FontForge has a number of font validation tests
+                that it will run as you are drawing out the various glyphs
+                you will need for your font. It is strongly recommended you
+                take these into account during the font development
+                process. If you want, you can have the validation screen
+                open continuously while you work, by going back to the main
+                font screen and clicking
+                <i>Element->Validation->Validate</i>. This will display
+                a list of the currently broken glyphs and the specific
+                errors in question.
+            </p>
+
+            <img src="2018-06-16/06.png" />
+
+            <p>
+                The lines and the vertices must not overlap. Zooming in on
+                where the rectangles meet shows exactly why; part of the
+                lower rectangle is <i>just</i> inside of the upper rectangle.
+            </p>
+                
+            <p>
+                Select the two top vertices and use the keyboard or mouse
+                to move them down.
+            </p>
+
+            <img src="2018-06-16/07.gif" />
+
+            <p>
+                There, our letter is fixed! With validation being
+                satisfied, go back to the main font screen and take a look
+                at our whole font thus far.
+            </p>
+
+            <img src="2018-06-16/08.png" />
+
+            <p>
+                With the capital T glyph complete, what needs to be done
+                now is to spend several more hours drawing out all of the
+                remaining characters. Good luck!
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>

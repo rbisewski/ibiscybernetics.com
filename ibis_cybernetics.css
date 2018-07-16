@@ -1,0 +1,260 @@
+/*
+ * ibiscybernetics.css
+ *
+ * Description: Stores the styles of the main Ibis Cybernetics page.
+ */
+
+@font-face {
+    font-family: 'eight-bit';
+    src: url('font/eight_bit.ttf');
+}
+
+@font-face {
+    font-family: 'open-sans';
+    src: url('font/open_sans.ttf');
+}
+
+body {
+    color: black;
+    font-family: 'eight-bit';
+    background: rgb(220,220,220);
+    margin: 0px;
+    padding: 0px;
+}
+
+hr {
+   border: solid 2px rgb(80,80,80);
+   margin: 40px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+}
+
+.centralize {
+    text-align: center;
+}
+
+.italics {
+    font-style: italic;
+}
+
+.margin_right_120 {
+    margin-right: 120px !important;
+}
+
+.subtitle_font {
+    font-size: 36px;
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+}
+
+.lower_subtitle { 
+    font-size: 36px;
+    padding-top: 18px;
+}
+
+#top_title_bar {
+    background-color: black;
+    border-bottom: solid black 2px;
+    height: 110px;
+    overflow: hidden;
+}
+
+#top_title_bar_centre {
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0px auto 0px auto;
+    overflow: hidden;
+    position: relative;
+    width: 1150px;
+}
+
+#top_title_bar_centre ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+
+#top_title_bar_centre li {
+    float: left;
+}
+
+#top_title_bar_centre img.top_title_bar_logo {
+    height: 85px;
+    margin: 10px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    overflow: hidden;
+    width: 480px;
+}
+
+#top_title_bar_centre a.top_title_bar_link {
+    color: white;
+    display: inline-block;
+    font-size: 36px;
+    font-style: normal;
+    letter-spacing: 1.0px;
+    line-height: 55px;
+    margin: 0px 25px;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    text-decoration: none;
+    vertical-align: middle;
+}
+
+#top_title_bar_centre a.top_title_bar_link:hover {
+    color: rgb(148,192,215);
+    text-decoration: none;
+}
+
+#sky2space_img {
+    background-color: black; 
+    background-image: -webkit-linear-gradient(top, #000000, #5787e8);
+    background-image: -moz-linear-gradient(   top, #000000, #5787e8);
+    background-image: -ms-linear-gradient(    top, #000000, #5787e8);
+    background-image: -o-linear-gradient(     top, #000000, #5787e8);
+    background-image: linear-gradient(        top, #000000, #5787e8);
+    box-sizing: border-box;
+    height: 820px;
+    max-height: 820px;
+    min-height: 820px;
+    overflow: hidden;
+    position: relative;
+}
+
+#sky2space_img #space_shuttle {
+    height: 194px;
+    position: relative;
+    left: 70px;
+    overflow: hidden;
+    top: 628px;
+    width: 122px;
+}
+
+#sky2space_img #sky2space_centrefold {
+    margin: 0px auto 0px auto;
+    padding: 0px;
+    width: 1250px;
+}
+
+#launchpad_ground {
+    background: url("img/launchpad_ground.png");
+    background-repeat: repeat-x;
+    border: black 2px solid;
+    height: 68px;
+}
+
+#main_img_fade_out_gradient {
+    background-color: rgb(102,102,102);
+    background-image: -webkit-linear-gradient(top, #9a928d, #efedec);
+    background-image: -moz-linear-gradient(   top, #9a928d, #efedec);
+    background-image: -ms-linear-gradient(    top, #9a928d, #efedec);
+    background-image: -o-linear-gradient(     top, #9a928d, #efedec);
+    background-image: linear-gradient(        top, #9a928d, #efedec);
+    height: 6px;
+    overflow: hidden;
+    width: 100%;
+}
+
+#main_ibis_content {
+    font-family: 'open-sans';
+    font-size: 16px;
+    overflow: hidden;
+    text-align: justify; 
+    word-spacing: 1px;
+}
+
+#main_ibis_content_centrefold {
+    margin: 0px auto 0px auto;
+    overflow: hidden;
+    padding: 0px;
+    width: 1100px;
+}
+
+#business_solutions {
+    padding: 20px;
+}
+
+.biz_content {
+    height: 200px;
+}
+
+.biz_content .biz_list {
+    float: left;
+    padding: 20px;
+    width: 825px;
+}
+
+.biz_content .biz_img {
+    float: left;
+    padding: 55px 20px 20px 30px;
+    width: 145px;
+}
+
+#projects_content {
+    height: 250px;
+}
+
+#projects_content #projects_list {
+    float: left;
+    padding: 20px;
+    width: 850px;
+}
+
+#projects_content #projects_img {
+    float: left;
+    padding: 55px 20px 20px 30px;
+    width: 150px;
+}
+
+#bottom_menu_fade_in_gradient {
+    background-color: rgb(102,102,102);
+    background-image: -webkit-linear-gradient(top, #efedec, #9a928d);
+    background-image: -moz-linear-gradient(   top, #efedec, #9a928d);
+    background-image: -ms-linear-gradient(    top, #efedec, #9a928d);
+    background-image: -o-linear-gradient(     top, #efedec, #9a928d);
+    background-image: linear-gradient(        top, #efedec, #9a928d);
+    height: 3px;
+    overflow: hidden;
+}
+
+#bottom_menu_bar {
+    background-color: rgb(102,102,102);
+    background-image: -webkit-linear-gradient(top, #707070, #565656);
+    background-image: -moz-linear-gradient(   top, #707070, #565656);
+    background-image: -ms-linear-gradient(    top, #707070, #565656);
+    background-image: -o-linear-gradient(     top, #707070, #565656);
+    background-image: linear-gradient(        top, #707070, #565656);
+    height: 60px;
+    overflow: hidden;
+}
+
+#bottom_menu_bar_centre {
+    width: 1100px;
+    margin: 0px auto 0px auto;
+}
+
+#bottom_menu_bar_centre ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+
+#bottom_menu_bar_centre li {
+    float: left;
+}
+
+#bottom_menu_bar .bottom_menu_bar_link {
+    color: white;
+    font-size: 36px;
+    letter-spacing: 1.0px;
+    line-height: 60px;
+    margin: 0px 0px 0px 0px;
+    padding: 0px;
+    position: relative;
+    text-decoration: none;
+}
+
+#bottom_menu_bar a.bottom_menu_bar_link:hover {
+    color: rgb(148,192,215);
+    text-decoration: none;
+}

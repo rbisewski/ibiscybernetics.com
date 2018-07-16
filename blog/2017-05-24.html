@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>2017-05-24: demystifying the obfuscated layers</h1>
+
+            <br>
+
+            <p>
+                One of the cool / frustrating aspects of low level language
+                programming is dealing with the attributes of the OS
+                itself. The thought occurred to me that this stuff starts
+                to take on an indirect mystical sort of reverence.
+            </p>
+
+            <p>
+                Perform a calloc blessing of the enigmatic object. Invoke
+                the reference of attribute. Set the value of variable.
+                Withdraw the memory of reference. End with the rites
+                of free, restoring to null.
+            </p>
+
+            <p>
+                A programmer is a bit like a machine, no?
+            </p>
+
+            <p>
+                The philosophy de jure endorsed by golang et al. is
+                probably the right one. Hide the details and let people get
+                down to business.
+            </p>
+
+            <p>
+                Still, I feel like something is lost from the equation. The
+                kernel is a real element functioning off of very real
+                hardware. Another layer. That makes it tricky. Speaking of
+                hardware tricks...
+            </p>
+
+            <p>
+                One day I was playing around with the <a
+                href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/of?h=v4.12-rc2">
+                Device Tree and OpenFirmware</a> module, and I noticed the
+                following error messages suddenly appear upon running
+                certain unit tests included with the mentioned kernel module:
+            </p>
+
+            <p class="grey_monospace">
+                ## dt-test ### start of unittest - you will see error messages
+                <br>
+                OF:/testcase-data/phandle-tests/consumer-a: could not get #phandle-cells-missing for
+                <br>
+                OF:/testcase-data/phandle-tests/consumer-a: could not get #phandle-cells-missing for
+                <br>
+                OF:/testcase-data/phandle-tests/consumer-a: could not find phandle
+                <br>
+                OF:/testcase-data/phandle-tests/consumer-a: could not find phandle
+                <br>
+                OF:/testcase-data/phandle-tests/consumer-a: arguments longer than property
+                <br>
+                OF:/testcase-data/phandle-tests/consumer-a: arguments longer than property
+                <br>
+                irq: no irq domain found for /testcase-data/interrupts/intc0 !
+                <br>
+                OF: overlay: overlay_is_topmost: #5 clashes #6 @/testcase-data/overlay-node/test-bus
+                <br>
+                OF: overlay: overlay #5 is not topmost
+                <br>
+                ## dt-test ### FAIL of_unittest_overlay_high_level():2131 overlay_base_root not init
+                <br>
+                ## dt-test ### end of unittest - 148 passed, 1 failed
+            </p>
+
+            <p>
+                Initially I had expected this might be a hardware issue, but I
+                quickly ruled that out. Since I was using a custom kernel,
+                a fast grep over the code found the answer. There were some
+                <a href="https://lkml.org/lkml/2017/4/24/1022">
+                newly added unit tests</a>, which had a few bugs that were
+                more or less immediately
+                <a href="http://lkml.iu.edu/hypermail/linux/kernel/1704.3/03541.html">
+                patched</a> by the developers who had wrote them.
+            </p>
+                
+            <p>
+                The warning messages thrown seem to be related to
+                <a href="http://lkml.iu.edu/hypermail/linux/kernel/1507.1/04256.html">
+                this</a> and so the solution in my case was simply to
+                disable the tests and rebuild the kernel. Done and done.
+            </p>
+
+            <p>
+                Actually kind of amazing how quick progress occurs in a
+                project of this size. Frankly impressed there aren't more
+                errors, and the code was reasonably clean too.
+            </p>
+                
+            <p>
+                I sort of felt motivated to keep exploring. So I glanced
+                around at other mild error messages in hopes of gleaming
+                a few nifty tidbits, and found this one:
+            </p>
+
+            <p class="grey_monospace">
+                AMD-Vi: Event logged [ IO_PAGE_FAULT device=09:00.0 
+                domain=0x0003 address=0x000000f400089ac0 flags=0x0010 ]
+            </p>
+
+            <p>
+                This particular log entry, might it have some origin in
+                hardware? Or a sad blobby firmware?
+            </p>
+                
+            <p>
+                A simple `lspci -v` noted the device in question (09:00.0)
+                pointed to an AMD graphics card using the opensource
+                amdgpu module.
+            </p>
+
+            <p>
+                Grepping around the driver directory did not turn up
+                too many clues. Some of the error messages were quite
+                helpfully verbose, or perhaps the opposite.
+            </p>
+
+            <p class="grey_monospace">
+                [AVFS] Something is broken. See log!
+            </p>
+               
+            <p>
+               Regarding the IO_PAGE_FAULT messages, I noticed quite a number
+               of them, one for every group of addresses on that PCIe bus
+               of the GPU. A little too convenient to simply be hardware
+               errors.
+            </p>
+
+            <p>
+               Hmmm... well the event was originally printed by a driver
+               for the AMD IOMMU. I had hoped there wouldn't be anything
+               physically wrong with the component, but at this point
+               I thought why not? 
+            </p>
+
+            <p>
+               Now this one was slightly trickier to pin down, there were
+               at least two files "amd_iommu.c" and "amd_iommu_v2.c" that
+               looked like they might be important. Possibly more.
+            </p>
+               
+            <p>
+               It ended up related to an event being polled on the IOMMU
+               itself, printed into the logs by the following code:
+            </p>
+
+            <p class="grey_monospace">
+               case EVENT_TYPE_IO_FAULT:
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;printk("IO_PAGE_FAULT
+               device=%02x:%02x.%x"
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;"domain=0x%04x address=0x%016llx
+               flags=0x%04x]\n",
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;PCI_BUS_NUM(devid), PCI_SLOT(devid),
+               PCI_FUNC(devid),
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;domid, address, flags);
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;break;
+            </p>
+               
+            <p>
+               The faults seemed to occur once-in-a-while on bootup, so maybe
+               it was related to that?
+            </p>
+               
+            <p>
+               I recalled that certain boot functionality on Linux was
+               controllable via boot arguments. A dozen hasty searches
+               later and I found the <a
+               href="https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt">
+               kernel parameters</a> document.
+            </p>
+
+            <p>
+               As an aside, the online Linux <a
+               href="https://www.kernel.org/doc/Documentation/admin-guide">
+               Admin Guide</a> from Kernel.org is a decent read, abet
+               with elements out-of-date or *really* out-of-date. Such is
+               the fate of good
+               <a href="https://www.kernel.org/doc/Documentation/admin-guide/java.rst">
+               documentation</a>:
+            </p>
+
+            <p class="grey_monospace">
+               Linux beats them ALL! While all other OS's are TALKING
+               about direct support of Java Binaries in the OS, Linux
+               is doing it!
+            </p>
+               
+            <p>
+               Still got your attention?
+            </p>
+               
+            <p>
+               Since the IOMMU is point of focus, I glanced at the
+               relevant documentation section.
+            </p>
+
+            <p class="grey_monospace">
+            	iommu=		[x86]
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;off
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;force
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;noforce
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;biomerge
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;panic
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;nopanic
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;merge
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;nomerge
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;forcesac
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;soft
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;pt		[x86, IA-64]
+                <br>
+		&nbsp;&nbsp;&nbsp;&nbsp;nobypass	[PPC/POWERNV] -
+                Disable IOMMU bypass, using IOMMU for PCI devices.
+            </p>
+               
+            <p>
+               Oh boy, around here it's not just the memory mapping that's
+               sparse. Some of them seem obvious, like 'off' or 'force',
+               and I suppose the 'panic' means that if an error or fault
+               occurs, then throw in the towel.
+            </p>
+               
+            <p>
+               The 'pt' option looks like it means pass-through, and
+               a search of the mailing list confirms this. It can be
+               accomplished via adding it to your bootloader of choice and
+               regenerating the config. In my case, it was grub2:
+            </p>
+
+            <p class="grey_monospace">
+               GRUB_CMDLINE_LINUX_DEFAULT="quiet iommu=pt"
+            </p>
+               
+            <p>
+               After reboot there were no more IO_PAGE_FAULT errors in the
+               logs. Problem solved.
+            </p>
+               
+            <p>
+               That was kind of exciting. I think I might dig deeper in the
+               future to better understand these things. I hope you do too.
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>

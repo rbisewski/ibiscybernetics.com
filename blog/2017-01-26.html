@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>2017-01-26: examining golang binaries and upx compression</h1>
+
+            <br>
+
+            <p>
+               Even though C is and continues to be a favourite language
+               of mine for a number of years, lately I'm been somewhat
+               interested in any alternatives that might actually be
+               available.
+            </p>
+
+            <p>
+               Ideally, in situations that call for performance, yet without
+               the need to write an entire strings library or harness the
+               libboost stack-and-friends. A popular one that comes to mind
+               is <a href="https://www.rust-lang.org">Rust</a>. That said,
+               after glancing at the sort of unique methodology that would
+               be demanded from it, I decided that at least for the time
+               being I would prefer to pick a language that more closely
+               matches the C-style syntax I am familiar with.
+            </p>
+
+            <p>
+               As an aside, since I have a bit of experience as
+               a browser developer, perhaps I'll look into Rust another time
+               if I ever want to play around with the
+               <a href="https://servo.org">Servo engine</a> code. I'll hold
+               off on that until some future date, I think.
+            </p>
+               
+            <p>
+               Now one of more widely used languages these days is Google's
+               latest and greatest, the golang programming language. A
+               number of larger players in the industry (even outside of
+               Google!) attest to its utility and speed, most notably Amazon.
+               So I felt taking a bit of time to look into this was
+               warranted.
+            </p>
+               
+            <p>
+               To get a feel for the syntax, I hastily wrote a small hwmon
+               temperature program, you can find it
+               <a href="https://github.com/rbisewski/tempchk">here</a>,
+               which grabs data from the relevant Linux system directories,
+               as per the 4.0-4.8 series of kernels. After a run of the
+               `go build` command to compile, I found it produced binaries
+               that were rather on the big side, at least in my opinion.
+               Roughly 2.5MB for a small 260 line program, which merely
+               reads from files and prints the numerical value to stdout.
+            </p>
+               
+            <p>
+               I began my investigation into this using the `strings`
+               commandline util to see if I could obtain any unencoded
+               symbols from the binary. This ended up outputting about half a
+               megabyte of various subroutine names from each of the imported
+               files.
+            </p>
+               
+            <p>
+               Even saw a couple of hardcoded locations embedded in the
+               debug portion of the file, specifically this:
+            </p>
+               
+            <p class="grey_monospace">
+               /usr/lib/go-1.6/src/runtime/runtime-gdb.py
+            </p>
+               
+            <p>
+               Ah, nothing better than binaries exec'ing script files.
+               Best of all, a Python script. Nothing could possibly go
+               wrong. Admittedly, this gets utilized only during
+               debugging, but still...
+            </p>
+               
+            <p>
+               Switching over to objdump, I went ahead and gleened the
+               binary. It was actually fun to look at. Here is a peek:
+            </p>
+
+            <p class="grey_monospace_code">
+               mov    0x18(%rsp),%rbp
+               <br>
+               cmp    %rbp,%rax
+               <br>
+               jge    4029d1 &#60;type..hash.[3]interface {}+0x71&#62;
+               <br>
+               mov    %rax,0x20(%rsp)
+               <br>
+               mov    0x30(%rsp),%rbx
+               <br>
+               cmp    $0x0,%rbx
+               <br>
+               je     4029db &#60;type..hash.[3]interface {}+0x7b&#62;
+               <br>
+               mov    %rax,%rbp
+               <br>
+               shl    $0x4,%rbp
+               <br>
+               add    %rbp,%rbx
+               <br>
+               mov    %rbx,(%rsp)
+               <br>
+               mov    %rcx,0x38(%rsp)
+               <br>
+               mov    %rcx,0x8(%rsp)
+               <br>
+               callq  403100 &#60;runtime.nilinterhash&#62;
+            </p>
+               
+            <p>
+               That's part of the golang hash implementation, which is
+               pleasantly well symbolled, likely to make x86-64 debugging
+               easier. Much easier to look at than the old 16/32bit x86
+               codes, but it does sorta confirm the binaries are filled
+               with literal multitudes.
+            </p>
+               
+            <p>
+               Anyway, with this in mind, a quick search online suggests 
+               that I am not alone in my examination of golang and its
+               beefier binaries, notably mentioned
+               <a href="https://donatstudios.com/Golang-Binary-Sizes">here</a>,
+               <a href="https://jamescun.com/golang/binary-size">here</a>
+               and
+               <a href="http://stackoverflow.com/questions/24126398/why-does-go-produce-big-binary-files-for-small-programs">here</a>.
+            </p>
+               
+            <p>
+               As surmised from the volume of symbols present in the binary
+               and confirmed by StackOverflow, golang is indeed statically
+               linked with a number of libraries. This explains all of the
+               above.
+            </p>
+               
+            <p>
+               I also noticed that David Crawshaw, one of the language
+               authors, is aware of the current situation, and has actively
+               worked on solving it in the newer
+               <a href="https://blog.golang.org/go1.7-binary-size">1.7 and 1.8 versions</a>
+               of golang.
+            </p>
+
+            <p>
+               Improvements on that front are always nice, especially the
+               inclusion of method pruning and reflection during the
+               compilation. Still, it does make me wonder how many golang
+               binaries are floating around out there with plaintext 
+               or easy to reverse engineer content like the aforementioned.
+            </p>
+               
+            <p>
+               Back on point, most machines likely have no issue with
+               sizable applications on their hard drives, but I figure
+               it couldn't hurt to check if some easy method exists to
+               improve this.
+            </p>
+               
+            <p>
+               With a little bit of searching around online, I noted two
+               particular argument
+               <a href="https://blog.filippo.io/shrink-your-go-binaries-with-this-one-weird-trick">flags</a>.
+            </p>
+               
+            <p>
+               Filippo Valsorda mentions that go-build actually offers a
+               symbol stripper which can be accomplished in the following
+               fashion:
+            </p>
+               
+            <p class="grey_monospace_code">
+               go build -ldflags="-s -w"
+            </p>   
+               
+            <p>
+               That shrunk the binary from 2.5MB to 1.7MB, so an improvement
+               of a sort. As noted on the blog post, I can confirm it's
+               mostly stripping the debug section, which is probably a good
+               thing, but really not that amazing overall. 
+            </p>   
+               
+            <p>
+               Filippo then goes on to use UPX, which is a pretty neat binary
+               packer, but it does mean you have to agree to their slightly
+               restrictive
+               <a href="https://upx.github.io/upx-license.html">license terms</a>.
+               Yet it does reduce my particular binary to a size of
+               531kB, which means I can now technically drag it around on a
+               floppy; a fairly staggering achievement for 2017!
+            </p>   
+               
+            <p>
+               UPX uses an LZMA-like lossless compression algorithm called
+               UCL, since they wanted the end-users to decompress it as well.
+               Ah, but before I do that, I think it might be worthwhile to
+               take a glance at the
+               <a href="https://en.wikipedia.org/wiki/Dictionary_coder">substitution coder table</a>
+               for fun, which you can see below:
+            </p>   
+               
+            <p class="grey_monospace_code">
+               !!!!  ""##  #$$$  %%&#38;&#38;  &#38;'''  (())  )***  ++,,
+               ,---  ..//  /000  1122  2333  4455  5666  7788  8999  ::;;
+               ;&#60;&#60;&#60;  ==&#62;&#62; &#62;???  @@AA  ABBB  CCDD
+               DEEE  FFGG  GHHH  IIJJ  JKKK  LLMM  MNNN  OOPP  PQQQ  RRSS
+               STTT  UUVV  VWWW  XXYY  YZZZ  [[\\  \]]]  ^^__  _```  aabb
+               bccc  ddee  efff  gghh  hiii  jjkk  klll  mmnn  nooo  9999
+               9999  9999  9999  9999  9999  9999  9999  9999  9999  NNNN
+               NNNN  NNNN  NNNN  NNNN  NNNN  NNNN  NNNN  NNNN  NNNN
+            </p>   
+               
+            <p>   
+               I tend to find they're interesting and nifty to look at,
+               since they give a concrete idea of what "lossless"
+               compression means; basically a kind of fancy hash array.
+               Also notice how the table is terminated by means of ten 9999
+               and ten NNNN characters.
+            </p>   
+               
+            <p>   
+               Going back to the binary itself, it was good to see that the
+               symbols had more or less been dealt with, aside from obvious
+               watermark footer embedded in the file:
+            </p>
+               
+            <p class="grey_monospace">
+               $Info: This file is packed with the UPX executable packer
+               http://upx.sf.net $ $Id: UPX 3.91 Copyright (C) 1996-2013
+               the UPX Team. All Rights Reserved. $
+            </p>
+               
+            <p>   
+               After compression, objdump had difficulty, which makes sense
+               given it's now a compressed archive for all practical
+               purposes.
+            </p>
+               
+            <p>   
+               Well, that concludes my brief exploration of golang binaries
+               and an overview of UPX. I might consider doing another
+               investigation once golang 1.8 arrives and is more widely
+               available.
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>

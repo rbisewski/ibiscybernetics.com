@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>2018-01-14: building charge with meson - an elementary
+            attempt</h1>
+
+            <br>
+
+            <p>
+                GNU Make is one of the most widely used build systems, and
+                over the years I have gotten better at using it despite
+                the syntax and lack of good examples. Still I consider it
+                to be one of my favourite tools.
+            </p>
+
+            <p>
+                Actually when compared to a lot of other build systems, it
+                can be considered quite elegant. With a little bit (or a
+                lot) of effort a repo or a project can build amazing
+                complexity. Or break in an unmentionable number of ways.
+            </p>
+
+            <p>
+                This has inspired a number of other developers to create
+                build systems that can meet the needs of the modern
+                programmer, ideally with a more documented syntax. As this
+                is understandly a hard task, these efforts were focused on
+                creating smaller build systems with better code bases.
+            </p>
+
+            <p>
+                One such example is the
+                <a href='http://ninja-build.org'>ninja</a> build system,
+                originally conceived to help with the monumental task of
+                building and handling the dependencies of the Google Chrome
+                browser; its primary focus is speed. For those out of the
+                loop, LWN offers a brief and interesting summary 
+                <a href='https://lwn.net/Articles/706404'>here</a>.
+            </p>
+
+            <p>
+                From my own experience, ninja is a somewhat faster than
+                Makefile builds, and its plainer syntax is admittedly
+                easier to read. However, this is only half the picture,
+                ninja itself is not meant for humans. Instead the goal is
+                to offload the generating of the scripts to
+                <a href='https://github.com/ninja-build/ninja/wiki/List-of-generators-producing-ninja-build-files'>
+                other tools</a> that allow for meatspace interactivity.
+            </p>
+
+            <p>
+                Increasingly I have seen inroads within the open source
+                community for the <a href="http://mesonbuild.com">meson</a>
+                build system, most notably Mesa and GStreamer. Since meson
+                is both popular and it uses ninja, I figured worth a shot,
+                eh?
+            </p>
+               
+            <p>
+                From the man pages:
+            </p>
+
+            <p class="grey_monospace">
+                Meson is a build system designed to optimize programmer
+                productivity. It aims to do this by providing simple,
+                out-of-the-box support for modern software development
+                tools and practices, such as unit tests, coverage reports,
+                Valgrind, CCache and the like.
+            </p>
+
+            <p>
+                Sounds right fine and dandy, but what can it do? Well I
+                find best to jump into these things with no expectations
+                and test them out on a small project. Think my tiny
+                <a href="https://github.com/rbisewski/sighte">webkit2 browser</a>
+                qualifies.
+            </p>
+
+            <p>
+                The
+                <a href="https://github.com/rbisewski/sighte/blob/0804a4b6b7a62afb7a8f03e92b8997757eff4a7d/Makefile">
+                Makefile</a> I had been using for this project was by no
+                means crufty, but adding new functionality to a Makefile is
+                always pain and testing.
+            </p>
+
+            <p>
+                For meson, everything begins with a meson.build file in the
+                main repo directory. After creating one, you'll need to
+                specify the project name and lang and any default options.
+                Since this is a pure C99 code base, all that's needed is:
+            </p>
+
+            <p class="grey_monospace">
+                project('sighte','c', default_options : ['c_std=c99'])
+            </p>
+
+            <p>
+                So for all the C files used for this project, they will be
+                forced to the C99 standard. Actually with meson you can set
+                the default options of other languages and compilers as
+                well, though this is a bit trickier.
+            </p>
+
+            <p>
+                Moving on I needed some way of setting the version number
+                when the build is generated. Originally that was done in
+                make via:
+            </p>
+
+            <p class="grey_monospace">
+                # Version
+                <br>
+                VERSION = `date +%y.%m`
+                <br>
+                <br>
+                # If unable to grab the version, default to N/A
+                <br>
+                ifndef VERSION
+                <br>
+                VERSION = "n/a"
+                <br>
+                endif
+            </p>
+
+            <p>
+                Not the fanciest, but it works. In meson though, it can
+                simply be treated as a variable.
+            </p>
+
+            <p class="grey_monospace">
+                version_raw = run_command('date','+%y.%m')
+                <br>
+                <br>
+                if version_raw.returncode() != 0
+                <br>
+                    version_raw = 'n/a'
+                <br>
+                endif
+                <br>
+                <br>
+                version = '-D VERSION="' + version_raw.stdout().strip() + '"'
+            </p>
+
+            <p>
+                Command execution, return code validation, and I can trim
+                whitespace? When compared to Makefiles, this feels rather
+                elegant. Now I figure that, in theory, there is a Makefile
+                way of doing this. Doubt it would be nearly as readable
+                though.
+            </p>
+
+            <p>
+                Managing include paths in Makefiles has always been a bit
+                of a pain, and while technically a programmer could use a
+                series of pkg-config variables, keeping track of any large
+                project is still a bit of a chore. Chances are you've seen
+                something like this:
+            </p>
+
+            <p class="grey_monospace">
+                # Webkit and GTK Include paths
+                <br>
+                GTKINC = -pthread \
+                <br>
+                         -I${USR_INC}/webkitgtk-4.0 \
+                <br>
+                         -I${USR_INC}/gtk-3.0 \
+                <br>
+                         -I${USR_INC}/gio-unix-2.0 \
+                <br>
+                         -I${USR_INC}/cairo \
+                <br>
+                         -I${USR_INC}/pango-1.0 \
+                <br>
+                         -I${USR_INC}/atk-1.0 \
+                <br>
+                         -I${USR_INC}/gdk-pixbuf-2.0 \
+                <br>
+                         -I${USR_INC}/libsoup-2.4 \
+                <br>
+                         ${GLIB_INC}
+                <br>
+                <br>
+                # Webkit and GTK library flags
+                <br>
+                GTKLIB = -lwebkit2gtk-4.0 \
+                <br>
+                         -lgtk-3 \
+                <br>
+                         -lgdk-3 \
+                <br>
+                         -ljavascriptcoregtk-4.0 \
+                <br>
+                         -lgio-2.0 \
+                <br>
+                         -lglib-2.0 \
+                <br>
+                         -lgobject-2.0 \
+                <br>
+                         -lsoup-2.4
+                <br>
+                <br>
+                # Other includes
+                <br>
+                INCS = -I. -I/usr/include ${GTKINC}
+                <br>
+                <br>
+                # Other libraries
+                <br>
+                LIBS = -L/usr/lib -lX11 ${GTKLIB}
+            </p>
+
+            <p>
+                Ah yes, Makefile newlines show their ugly presence. Suppose
+                I could concat them all into a single line and make them
+                illegible. Considering there are far worse Makefiles I
+                really can't complain. What is the meson way of doing it,
+                you ask?
+            </p>
+
+            <p class="grey_monospace">
+                atkdep &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = dependency('atk')
+                <br>
+                cairodep &nbsp;&nbsp;&nbsp; = dependency('cairo')
+                <br>
+                gdkdep &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = dependency('gdk-3.0')
+                <br>
+                gdkpixbufdep = dependency('gdk-pixbuf-2.0')
+                <br>
+                gtkdep &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = dependency('gtk+-3.0')
+                <br>
+                giounixdep &nbsp; = dependency('gio-unix-2.0')
+                <br>
+                glibdep &nbsp;&nbsp;&nbsp;&nbsp; = dependency('glib-2.0')
+                <br>
+                pangodep &nbsp;&nbsp;&nbsp; = dependency('pango')
+                <br>
+                libsoupdep &nbsp; = dependency('libsoup-2.4')
+                <br>
+                threaddep &nbsp;&nbsp; = dependency('threads')
+                <br>
+                webkit2 &nbsp;&nbsp;&nbsp;&nbsp; = dependency('webkit2gtk-4.0')
+                <br>
+                x11dep &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = dependency('x11')
+                <br>
+                <br>
+                all_deps = [atkdep,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cairodep,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gdkdep,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gtkdep,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;giounixdep,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;glibdep,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pangodep,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;libsoupdep,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threaddep,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;webkit2,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x11dep]
+            </p>
+
+            <p>
+                Unbelievable. This is both readable and free of hidden tab
+                characters and not-so-hidden Makefile-style newlines. Also
+                keep in mind that you may still need to test it out with
+                pkg-config beforehand to get the package name correct.
+                However, I think you will agree that the meson code is
+                likely more maintainable and extensible.
+            </p>
+
+            <p>
+                Moving on to build targets, for make the code looked
+                something like this:
+            </p>
+
+            <p class="grey_monospace">
+                release: options
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@echo Building $@ version...
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@${CC} -s ${SRC}
+                ${CFLAGS} -D DEBUG_MODE=${DEBUG_MODE_OFF} \
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-D
+                VERBOSE_MODE=${VERBOSE_MODE_OFF} -o sighte ${LIBS}
+                <br>
+                <br>
+                staging: options
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@echo Building $@ version...
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@${CC} -g ${SRC}
+                ${CFLAGS} -D DEBUG_MODE=${DEBUG_MODE_ON} \
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-D
+                VERBOSE_MODE=${VERBOSE_MODE_OFF} -o sighte ${LIBS}
+                <br>
+                <br>
+                debug:  options
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@echo Building $@ version...
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@${CC} -g ${SRC} ${CFLAGS}
+                -D DEBUG_MODE=${DEBUG_MODE_ON} \
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-D
+                VERBOSE_MODE=${VERBOSE_MODE_ON} -o sighte ${LIBS}
+            </p>
+
+            <p>
+                Not that bad, I believe there are a number of good ways to
+                optimize it in make, so this could be improved. In meson
+                each of the different build targets have simple
+                comma-separated argument arrays, which can help improve
+                the readability of the buildfile.
+            </p>
+
+            <p class="grey_monospace">
+                files_list = ['sighte.c']
+                <br>
+                <br>
+                executable('release', files_list,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;c_args : ['-O2', '-g0', flags, debug_off, verbose_off],
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;dependencies : all_deps)
+                <br>
+                <br>
+                executable('staging', files_list,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;c_args : ['-g', flags, debug_on, verbose_off],
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;dependencies : all_deps)
+                <br>
+                <br>
+                executable('debug', files_list,
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;c_args : ['-g', flags, debug_on, verbose_on],
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;dependencies : all_deps)
+            </p>
+
+            <p>
+                A tad different than what I am used to, but the plain view
+                of the compiler arguments and dependencies feels vast and open
+                versus the old Makefile lines. With this code in place my
+                meson.build file is more-or-less complete. To build the
+                ninja scripts, simply call meson with the name of the
+                project whilst in the directory containing the meson.build
+                file.
+            </p>
+
+            <p class="grey_monospace">
+                meson sighte
+            </p>
+
+            <p>
+                For the curious, compare the original
+                <a href="https://github.com/rbisewski/sighte/blob/0804a4b6b7a62afb7a8f03e92b8997757eff4a7d/Makefile">
+                Makefile</a> and the new
+                <a href="https://github.com/rbisewski/sighte/blob/9db6685502e2093638c29340f63774101369667e/meson.build">
+                meson.build</a> file. All-in-all I am satisfied with both
+                make and meson, as these tool-chains accomplish their goal
+                of automating the build process for the developer. Yet it
+                has intrigued me enough that alternatives exist that could
+                build on (pun intended) the ideas that GNU Make started all
+                of those years ago.
+            </p>
+
+            <p>
+                At some future blog post I may attempt to further explore
+                ninja and the other features of meson to a greater degree,
+                since I figure there are still many other avenues to check
+                out.
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>

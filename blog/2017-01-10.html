@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>2017-01-10: a brief exploration of the icebp x86 instruction</h1>
+
+            <br>
+
+            <p>
+              I was glancing around at some long-abandoned x86 assembly code
+              from an old Linux box when I noticed a rather odd `icebp`
+              command I had seen before but never really ever took the time
+              to actually investigate. Since it appeared in other locations,
+              I assumed it had something to do debugging or some odd
+              x86-specific flag behaviour.
+            </p>
+
+            <p>
+              For context, here is a snip of the code in question:
+            </p>
+
+            <p class="grey_monospace_code">
+                loopne 0x1192
+                <br>
+                add    %al,(%eax)
+                <br>
+                adc    (%eax),%al
+                <br>
+                add    %al,(%eax)
+                <br>
+                icebp
+                <br>
+                adc    %al,(%eax)
+                <br>
+                add    %cl,-0x07(%eax)
+                <br>
+                add    %al,(%eax)
+                <br>
+                add    %dl,(%edx)
+                <br>
+                add    %al,(%eax)
+                <br>
+                add    %ah,(%edx)
+                <br>
+                or     $0x0,%al
+            </p>
+
+            <p>
+               The code itself is nothing exceptional, basically just a loop
+               if a certain address (i.e. variable) is null. However, there
+               were a handful of those `icebp` lines present throughout the
+               code, and they didn't seem to do much; at least, nothing
+               obvious.
+            </p>
+
+            <p>
+               A quick search led me to a rather dated, but interesting
+               website about x86 undocumented assembly operation codes. The
+               concerning page can be found
+               <a href="http://www.rcollins.org/secrets/opcodes/ICEBP.html">
+               here</a>. Quoting from the text present on that page:
+            </p>
+
+            <p class="grey_monospace">
+               An undocumented op code that will make debugging run-time
+               code on an ICE easier.
+            </p>
+
+            <p>
+               Seems to be related to the x86 "in-circuit emulator," which
+               apparently was a oft-used method of debugging x86 code a
+               number of years ago. I personally don't know that much about
+               it, and frankly there aren't more than half-dozen pages with
+               any meaningful content about it. I suppose that's not exactly
+               that surprising with it being an "undocumented feature" and
+               all.
+            </p>
+
+            <p>
+               Anyhow, this instruction inserts a breakpoint into the code,
+               hence the "bp" at the end of "icebp" instruction. I guess this
+               could be useful if you just want to stop at some point and
+               check the flags. This program was large, so from a situational
+               point-of-view it could make sense.
+            </p>
+
+            <p>
+              With that in mind, I thought I'd fire it up by assembling it
+              via the binutils "as" command, but I kept getting errors like
+              the following:
+            </p>
+
+            <p class="grey_monospace_code">
+              atnx_93.as: Assembler messages:
+              <br>
+              atnx_93.as:217: Error: no such instruction: `icebp'
+            </p>
+
+            <p>
+              I also attempted to enforce 32-bit mode via the `--32` argument
+              option. Sadly no luck, so maybe binutils just no longer support
+              it? Something to look into at a later date, I suppose.
+            </p>
+
+            <p>
+              Since "as" was unable to build it, I figured perhaps some
+              other, more widely used assembler could do it. After doing a
+              hasty "apt-get install fasm" I attempted to build it. With
+              fasm, it did not seem to complain and that part of the program
+              ran as intended after being linked.
+            </p>
+
+            <p>
+              So if binutils no longer support it, then maybe there is some
+              way of updating the code such that the original behaviour is
+              retained?
+            </p>
+
+            <p>
+              I was starting to wonder if maybe anyone else had noticed this
+              behaviour. After a bit more searching, I came across a rather
+              neat mailing list conversation between two Linux kernel
+              developers fixing the non-masked interrupt (NMI) code 
+              <a href="https://lkml.org/lkml/2015/7/31/94">here</a>.
+              It's a bit funny, so I'll quote it here:
+            </p>
+
+            <p class="grey_monospace">
+              This instruction is awesome. Binutils can disassemble it
+              (it's called "icebp") but it can't assemble it.
+            </p>
+
+            <p>
+              By all means, read the whole thread, it's kinda interesting.
+              As an aside, I should perhaps mention that in 2015/2016 there
+              was a concerted effort to remove chunks of x86 assembler from
+              a number of locations in the kernel. I seem to recall the
+              argument being that several of the original long-time
+              maintainers retiring, but feel free to correct me if this is
+              wrong.
+            </p>
+
+            <p>
+             Anyway, in the thread one of the maintainers, Boris Petkov, was
+             curious about it and decided to dig deeper. He comes to the
+             conclusion that it really isn't all that special, and it can be
+             replaced with an `int 0x01` if need-be. Boris ends by
+             mentioning:
+            </p>
+
+            <p class="grey_monospace">
+             If I'd had to guess, it isn't documented because of the
+             proprietary ICE aspect. And no one uses ICEs anymore so it is
+             going to be forgotten with people popping off and on and asking
+             about the undocumented opcode.
+            </p>
+
+            <p>
+             It appears he didn't have any more luck than I did, but the
+             bit of time it took to find meaningful answers about it made me
+             want to write a blog post, if only to satisfy the possible
+             curiousity of others.
+            </p>
+
+            <p>
+             Heading back to my code, I did a simple find-and-replace in vim
+             by means of the %s command. Here is what the snip in question
+             looks like afterwards:
+            </p>
+
+            <p class="grey_monospace_code">
+                loopne 0x1192
+                <br>
+                add    %al,(%eax)
+                <br>
+                adc    (%eax),%al
+                <br>
+                add    %al,(%eax)
+                <br>
+                int    $0x01 
+                <br>
+                adc    %al,(%eax)
+                <br>
+                add    %cl,-0x07(%eax)
+                <br>
+                add    %al,(%eax)
+                <br>
+                add    %dl,(%edx)
+                <br>
+                add    %al,(%eax)
+                <br>
+                add    %ah,(%edx)
+                <br>
+                or     $0x0,%al
+            </p>
+
+            <p>
+                Afterwards the program assembled and linked correctly, and
+                also appeared to run "properly"; I mean it still breaks once
+                it gets to that code, but it's for debugging so that's sort
+                of the point. With all of the above noted, I think I can call
+                this an improvement. At the very least I would say that it was
+                interesting to get to play around with x86 instructions
+                again.
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,41 @@
+/*
+ * ibiscybernetics.css
+ *
+ * Description: Stores the styles of the Ibis Cybernetics blog page.
+ */
+
+* {
+    font-family: Arial;
+}
+
+a,p,span {
+    font-size: 14px;
+}
+
+p.grey_monospace
+{
+    background-color: rgb(230,230,230);
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px;
+}
+
+p.grey_monospace_code
+{
+    background-color: rgb(230,230,230);
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px 10px 10px 50px;
+}
+
+pre {
+    background-color: rgb(230,230,230);
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.centre_content {
+    margin: 0 auto 0 auto;
+    width: 700px;
+}

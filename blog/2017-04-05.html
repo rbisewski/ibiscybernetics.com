@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>2017-04-05: first glance at the gnu parallel utility</h1>
+
+            <br>
+
+            <p>
+                During a discussion I had the other day with a sysadmin, I
+                heard about this neat tool I had never used before, called
+                <a href="https://www.gnu.org/software/parallel/">GNU
+                    Parallel</a>, which allows a simple terminal way of
+                executing multiple commands on one or more machines.
+            </p>
+
+            <p>
+                It accepts arguments similar to those of xargs, which means
+                potentially it can be an elegant drop-in replacement for
+                situations where fiddling around with pipes will get the job
+                done. That said, parallel has a great deal of arguments, making
+                it seemingly a flexible program.
+            </p>
+
+            <p>
+                As an aside, I suppose the pythonic method of doing something
+                like this would be <a href="http://fabfile.org/">fabric</a>,
+                which is fairly impressive as well. Plus it has been around
+                long enough that it has grown into a mature library.
+            </p>
+
+            <p>
+                However, I was intrigued by the idea of getting parallel to
+                work in a similar fashion, at least for the purposes of
+                executing commands on multiple instances.
+            </p>
+
+            <p>
+                Before doing that though, I think a quick overview of
+                parallel and its syntax is warranted. Let's begin...
+            </p>
+
+            <p class="grey_monospace">
+               parallel
+            </p>
+
+            <p>
+                Upon doing so a warning appears, or at least on the
+                Debian docker image being used for this example:
+            </p>
+
+            <p class="grey_monospace">
+               parallel: Warning: Input is read from the terminal. Only
+               experts do this on purpose. Press CTRL-D to exit.
+            </p>
+
+            <p>
+                I think the newer versions have a slightly different
+                warning message. On my Solus desktop I got the following:
+            </p>
+
+            <p class="grey_monospace">
+                parallel: Warning: Input is read from the terminal. You either
+                know what you
+                <br>
+                parallel: Warning: are doing (in which case: YOU ARE AWESOME!)
+                or you forgot
+                <br>
+                parallel: Warning: ::: or :::: or to pipe data into parallel.
+                If so
+                <br>
+                parallel: Warning: consider going through the tutorial: man
+                parallel_tutorial
+                <br>
+                parallel: Warning: Press CTRL-D to exit.
+            </p>
+
+            <p>
+                Regardless, this is good advice as parallel will attempt
+                to run each line as a single process, with one job per CPU,
+                as the default. So a bit of caution ought to be exercised
+                and a quick read over the man page is recommended.
+            </p>
+
+            <p>
+                Assuming that the reader is indeed in a safe environment
+                with sufficient permissions, trying typing the following
+                into the parallel terminal.
+            </p>
+
+            <p class="grey_monospace">
+                lscpu
+                <br>
+                lsblk
+                <br>
+                pwd 
+            </p>
+
+            <p>
+                Be sure to hit enter at the end of each line, as \n is the
+                default job separator. Finally end the session by pressing
+                CTRL-D. Afterwards you'll get the CPU info, block device
+                info, and a print of the current working directory.
+            </p>
+
+            <p>
+                Not too shabby, but not actually better than bash yet. The
+                utility itself has a fairly nifty syntax, reminiscent of
+                `find` in some ways.
+            </p>
+
+            <p>
+                A more gruelling practical example might be trying to
+                decompress the contents of a number of bz2 archives into
+                their own separate folders simultaneously. With parallel
+                this becomes an elegant one-liner.
+            </p>
+
+            <p class="grey_monospace">
+                parallel 'mkdir {.}; mv {} {.}; bunzip2 {.}/{};' ::: *.bz2
+            </p>
+
+            <p>
+                Which is pretty nice and each archive is decompressed on a
+                separate CPU core. Yet a fancy bash or perl script could
+                still, in theory, be used in its place.
+            </p>
+
+            <p>
+                How about getting parallel to ssh and execute commands on
+                multiple machines? To accomplish this, parallel reads data
+                in from a file located in its config directory, which is
+                located in...
+            </p>
+
+            <p class="grey_monospace">
+                ~/.parallel/sshloginfile
+            </p>
+
+            <p>
+                Below is a sample file to give you an idea of how this
+                works.
+            </p>
+
+            <p class="grey_monospace">
+                #
+                <br>
+                # Assign one core for user "gill" on host "192.168.2.26"
+                <br>
+                #
+                <br>
+                1/gill@192.168.2.26
+                <br>
+                <br>
+                #
+                <br>
+                # Assign four cores for user "john" on host "192.168.4.174"
+                <br>
+                #
+                <br>
+                4/john@192.168.4.174
+                <br>
+                <br>
+                #
+                <br>
+                # Assign two cores for user "nate" on host "192.168.5.231"
+                <br>
+                #
+                <br>
+                2/nate@192.168.5.231
+            </p>
+
+            <p>
+                Consider reading the man page for more details, but once
+                that is all filled in with the details of your local
+                network machines or cluster, running quick commands on
+                them is a bit of breeze. Maybe you need to check uptime?
+            </p>
+
+            <p class="grey_monospace">
+                parallel -S .. 'hostname; uptime' ::: ..
+            </p>
+
+            <p>
+                Afterwards the current uptime of the specified machines
+                will be printed to stdout. Note that parallel seems to
+                have a bit of difficulty handling keys and passphrases
+                natively. The man page suggests instead that the user
+                run sshpass or ssh-agent to function as a sort of
+                middleman.
+            </p>
+
+            <p>
+                Adjusting the sshloginfile to the below allows for a
+                password to be assigned to the individual hosts: 
+            </p>
+
+            <p class="grey_monospace">
+                #
+                <br>
+                # Assign one core for user "gill" on host "192.168.2.26"
+                <br>
+                #
+                <br>
+                1/sshpass -p abc123 ssh gill@192.168.2.26
+                <br>
+                <br>
+                #
+                <br>
+                # Assign four cores for user "john" on host "192.168.4.174"
+                <br>
+                #
+                <br>
+                4/sshpass -p abc123 ssh john@192.168.4.174
+                <br>
+                <br>
+                #
+                <br>
+                # Assign two cores for user "nate" on host "192.168.5.231"
+                <br>
+                #
+                <br>
+                2/sshpass -p abc123 ssh nate@192.168.5.231
+            </p>
+
+            <p>
+                In this case the use of sshpass is specified, and the users
+                have been assigned the woefully inadequate password of
+                "abc123" for this particular example. Running the previous
+                uptime command still returns the uptime of each host.
+            </p>
+
+            <p>
+                Just from looking at this briefly, I figure there are use
+                cases where handling a large number of internal VMs or
+                instances which might make parallel an interesting tool.
+            </p>
+
+            <p>
+                This utility potentially has its uses, and I feel there is
+                quite a bit of more that this could be used for. I might
+                have to come back and do a further analysis of this at a
+                later blog post.
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>

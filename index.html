@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Website Version 2.1.0 -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics.css">
+
+        <!-- favicon -->
+        <link href="ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body id="Top">
+
+        <!-- blue gradient title bar -->
+        <div id="top_title_bar">
+
+            <!-- centring element that contains links -->
+            <div id="top_title_bar_centre">
+
+                <!-- container for links -->
+                <ul>
+                    <!-- ibis mini-logo -->
+                    <li>
+                        <img class="top_title_bar_logo" 
+                             alt="Ibis Cybernetics Corporation"
+                             src="img/ibis_logo_r2.png" />
+                    </li>
+
+                    <!-- home link -->
+                    <li><a class="top_title_bar_link" href="#Welcome">Welcome</a></li>
+
+                    <!-- software link -->
+                    <li><a class="top_title_bar_link" href="blog/index.html">Blog</a></li>
+
+                    <!-- software link -->
+                    <li>
+                        <a class="top_title_bar_link" href="#Biz">
+                            Business Solutions
+                        </a>
+                    </li>
+
+                    <!-- projects link -->
+                    <li><a class="top_title_bar_link" href="#Projects">Projects</a></li>
+
+                    <!-- retrosite link -->
+                    <li><a class="top_title_bar_link" href="retrosite/index.html">Retrosite</a></li>
+
+                    <!-- contact us link -->
+                    <li><a class="top_title_bar_link" href="#Contact" />Contact Us</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- big sky-to-space picture, covers whole screen at 1920x1080 -->
+        <div id="sky2space_img_main_page">
+
+            <!-- sky2space image object -->
+            <div id="sky2space_img">
+                <div id="sky2space_centrefold">
+                    <img id="space_shuttle"
+                         alt="Yes, that's a spaceshuttle :P"
+                         src="img/shuttle_r2.png" />
+                </div>
+            </div>
+
+            <div id="launchpad_ground">
+            </div>
+
+            <!-- image fade-out gradient -->
+            <div id="main_img_fade_out_gradient"></div>
+        </div>
+
+        <!--
+             main content section; gonna show home, software, publications,
+             and information about how to contact us
+        -->
+        <div id="main_ibis_content">
+            <div id="main_ibis_content_centrefold">
+
+                <!--
+                     ############################
+                     Welcome Section Begins Here
+                     ############################
+                -->
+                <div id="Welcome" class="subtitle_font">
+                    Intelligent Business Cybernetics
+                </div>
+
+                <div>
+                    <p>
+                        A North American software company since 2016, Ibis
+                        Cybernetics was founded with the objective of improving
+                        business processes through open source software
+                        engineering. Consider some of our current offerings or
+                        possibly contributing to our projects.
+                    </p>
+                </div>
+
+                <hr>
+
+                <!--
+                     ######################################
+                     Business Solutions Section Begins Here
+                     ######################################
+                -->
+                <div id="Biz" class="subtitle_font">
+                    Business Solutions
+                </div>
+
+                <div id="business_solutions">
+                    <p>Currently we offer the following open source 
+                    solutions...</p>
+                    <br>
+
+                    <div class="biz_content">
+                        <div class="biz_list">
+                            <p>
+                                RESERVATION GAP RULE CALCULATOR:
+                            </p>
+                            <ul>
+                                <li>Written in Java 8</li>
+                                <li>Takes hotel or campsite reservation data in
+                                JSON format</li>
+                                <li>RESTful API for remote requests</li>
+                                <li>Simple commandline interface for dealing with
+                                local database requests</li>
+                                <li>Download it or fork it 
+                                    <a href="https://github.com/rbisewski/campsite_reservation_gap_finder"
+                                     title="This will take you to our GitHub page.">here</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="biz_img">
+                            <img id="biz_img_reservation"
+                                 alt="Screenshot of the Reservation Gap Rule
+                                 Calculator"
+                                 src="img/biz_reservation_calc.png" />
+                        </div>
+                    </div>
+                    <br>
+
+
+                    <div class="biz_content">
+                        <div class="biz_list">
+                            <p>
+                                HTML/EMAIL INVOICE GENERATOR:
+                            </p>
+                            <ul>
+                                <li>Written in Python v3.6</li>
+                                <li>Takes order or product data and converts it an
+                                invoice</li>
+                                <li>Simple commandline interface which generates
+                                straight to HTML</li>
+                                <li>Interface allows for sending invoices to
+                                customers via email</li>
+                                <li>Source code for this can be found 
+                                    <a href="https://github.com/rbisewski/pyhtml-invoice"
+                                       title="This will take you to our GitHub page.">here</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="biz_img">
+                            <img id="biz_img_pyhtml"
+                                 alt="Screenshot of the Python HTML Invoice
+                                 Generator"
+                                 src="img/biz_pyhtml_invoice.png" />
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="biz_content">
+                        <div class="biz_list">
+                            <p>
+                                WEBKIT2 INTERNET BROWSER:
+                            </p>
+                            <ul>
+                                <li>Written in C99 and uses GTK</li>
+                                <li>High performance and low memory web browser</li>
+                                <li>Uses the WebKit2 engine and javascript handler</li>
+                                <li>Compatible with both x86 and ARM devices</li>
+                                <li>Get it 
+                                    <a href="https://github.com/rbisewski/sighte"
+                                       title="This will take you to our GitHub page.">here</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="biz_img">
+                            <img id="biz_img_sighte"
+                                 alt="Screenshot of the Sighte Web Browser"
+                                 src="img/biz_sighte_browser.png" />
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="biz_content">
+                        <div class="biz_list">
+                            <p>
+                                TEMPERATURE SENSOR HANDLER:
+                            </p>
+                            <ul>
+                                <li>Written in golang</li>
+                                <li>Obtains info via low level Linux kernel ABI</li>
+                                <li>Accessed via commandline interface,
+                                which means no UI is needed</li>
+                                <li>Compatible with any device that can run the
+                                Linux kernel</li>
+                                <li> Feel free to download it 
+                                    <a href="https://github.com/rbisewski/tempchk"
+                                       title="This will take you to our GitHub page.">here</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="biz_img">
+                            <img id="biz_img_tempchk"
+                                 alt="Screenshot of the Temperature Sensor
+                                 Handler"
+                                 src="img/biz_tempchk.png" />
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!--
+                     ############################
+                     Projects Section Begins Here
+                     ############################
+                -->
+                <div id="Projects" class="subtitle_font">
+                    Projects
+                </div>
+
+                <div id="projects_content">
+                    <div id="projects_list">
+                        <p>
+                          Ibis Cybernetics is an active contributor to the open 
+                          source community, you can find our code repo
+                          <a href="https://github.com/rbisewski"
+                             title="Head over to GitHub and download
+                             it!">here</a>.<br>There are a growing number
+                             of interesting projects, which include:
+                        </p>
+                        <ul>
+                            <li>Ledctl, a nifty method of using the Linux
+                            kernel to control LEDs</li>
+                            <li>Lclusterd, a mini-K8s that uses runc to create
+                            libcontainerd instances</li>
+                            <li>Rubymsg, a reddit-like messages board written
+                            entirely in Ruby-on-Rails</li>
+                            <li>Golang-Roguelike, a small game that can serve
+                            as an example of how to build ncurses UIs in
+                            golang</li>
+                        </ul>
+                        <p>
+                          Other on-going projects include development of a
+                          retro-pixelart RPG videogame. You can find more
+                          details on our twitter page.
+                        </p>
+                    </div>
+
+                    <div id="projects_img">
+                        <img id="projects_img_rogue"
+                             alt="Screenshot of the golang roguelike"
+                             src="img/golang_roguelike.gif" />
+                    </div>
+                </div>
+
+                <div>
+                </div>
+
+                <hr>
+
+                <!--
+                     ##############################
+                     Contact Us Section Begins Here
+                     ##############################
+                -->
+                <div id="Contact" class="subtitle_font">
+                    Contact Us
+                </div>
+
+                <div>
+                    <p>
+                      Follow us on Twitter:
+                      <a href="http://twitter.com/ibiscybernetics" 
+                         title="Click to see our latest news!">
+                         @ibiscybernetics
+                      </a>
+                    </p>
+
+                    <p>
+                      For more information about our services, feel free
+                      to email us at:
+                      <a href="mailto:contact@ibiscybernetics.com"
+                         title="Our email address is --> contact@ibiscybernetics.com">
+                         contact@ibiscybernetics.com
+                      </a>
+                    </p>
+                </div>
+
+                <br>
+
+            <!-- end of div "main_ibis_content_centrefold" -->
+            </div>
+
+        <!-- end of div "main_ibis_content_centrefold" -->
+        </div>
+
+        <!-- fade-in for the grey gradient used for the bottom menu -->
+        <div id="bottom_menu_fade_in_gradient">
+        </div>
+
+        <!-- grey gradient for bottom menu -->
+        <div id="bottom_menu_bar">
+
+            <!-- centring element that contains links -->
+            <div id="bottom_menu_bar_centre">
+
+                <!-- container for links -->
+                <ul>
+                    <!-- copyright info link -->
+                    <li class="bottom_menu_bar_link margin_right_120">
+                        (C) Ibis Cybernetics Corporation - All Rights Reserved
+                    </li>
+ 
+                    <!-- back-to-top link -->
+                    <li><a class="bottom_menu_bar_link" href="#Top">Back To Top</a></li>
+                </ul>
+            </div>
+        </div>
+    </body>
+
+</html>
