@@ -12,6 +12,10 @@ a,p,span {
     font-size: 14px;
 }
 
+ul.paragraph_ul {
+    font-size: 14px;
+}
+
 p.grey_monospace
 {
     background-color: rgb(230,230,230);
