@@ -34,10 +34,10 @@
             <br>
 
             <p>
-               The ancient and unchanging iptables is probably the most
-               used of all the Linux networking tools, and at some point in
-               the career of a sysadmin or a Linux developer, you will come
-               across it. From the man page:
+               The well-known and oft-used Linux networking tool, iptables,
+               is something that eventually in the career of a Linux
+               sysadmin or developer, will require manual configuration.
+               From the man page:
             </p>
 
             <p class="grey_monospace">
@@ -52,18 +52,18 @@
             </p>
                
             <p>
-               Admittedly, filtering IPv6 addresses is
-               perhaps worthy of an article itself due to the current
-               prevalence in the industry for IPv4 addresses and the
-               commonality of IPv6 addresses in use among hackers and other
-               smaller online communities.
+               Admittedly, filtering IPv6 addresses is perhaps worthy
+               of an article itself due to the current prevalence in the
+               industry for IPv4 addresses and the commonality of IPv6
+               addresses in use among hackers and other smaller online
+               communities.
             </p>
 
             <p>
-               This blog post will instead focus on using the IPv4 variant.
-               To begin, start with bring up a verbose list of the current
-               filtering rules in place on a given host. Type the following
-               into a terminal:
+               Instead, the focus will be on using the original IPv4 variant.
+               Start by printing a verbose list of the current filtering
+               rules in place on a given host. Type the following into
+               a terminal:
             </p>
 
             <p class="grey_monospace_code">
@@ -120,7 +120,7 @@
                     prot - the protocol the rule applies to; e.g. udp, tcp, all
                 </li>
                 <li>
-                    opt - IPv4 options for a given rule, if uninterested then --
+                    opt - IPv4 options for a given rule, if null then --
                 </li>
                 <li>
                     in - interface used as input; e.g. lo, enp4s0, any 
@@ -137,7 +137,7 @@
             </ul>
 
             <p>
-               To add a rule, decide which chain you wish to append to, the
+               To add a rule, decide which chain to append to, the
                protocol, the port and the intended action. For example, to
                allow any SSH traffic into the given system, type the
                following:
@@ -169,7 +169,7 @@
             </p>
 
             <p>
-               Packets that the incoming from a certain port can be blocked
+               Packets that are incoming from a certain port can be blocked
                as well to prevent traffic from being accessed. This can be
                done by setting the DROP action:
             </p>
@@ -201,7 +201,7 @@
             </p>
 
             <p>
-               If there multiple groups of IP addresses that are being
+               If there are multiple groups of IP addresses that are being
                rate limited for different reasons, consider setting the
                log-prefix to something meaningful than simply the "denied"
                text used above.
@@ -215,20 +215,41 @@
             </p>
 
             <p class="grey_monospace_code">
-                iptables-save > /etc/iptables.rules
+                iptables-save > /etc/iptables/iptables.rules
             </p>
 
             <p>
-                The rules may then be loaded using the restore program like
-                so:
+                The rules will now be loaded on startup. To immediately
+                have them loaded, merely restart iptables via systemctl.
             </p>
 
             <p class="grey_monospace_code">
-                iptables-restore &lt; /etc/iptables.rules
+                systemctl restart iptables
             </p>
 
             <p>
-                [insert content here]
+                Please note that it is possible to accidently break a
+                connected session and be locked out of a system, say if
+                the session is connected via <i>ssh</i> and port 22 is now
+                blocked. Consider testing the rules file on a non-critical
+                local machine first to prevent unforeseen consequences.
+            </p>
+
+            <p>
+                If you change the rules later on and want to reset them to
+                the default, the rules may then be reloaded using the
+                restore program like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                iptables-restore &lt; /etc/iptables/iptables.rules
+            </p>
+
+            <p>
+                There are quite a few other features in iptables,
+                however, this covers all of the basics. Perhaps at some
+                later date a post that details further scenarios will be
+                written.
             </p>
 
             <br>
