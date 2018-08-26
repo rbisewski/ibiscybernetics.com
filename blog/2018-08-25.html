@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>2018-08-25: a practical introduction to iptables</h1>
+
+            <br>
+
+            <p>
+               The ancient and unchanging iptables is probably the most
+               used of all the Linux networking tools, and at some point in
+               the career of a sysadmin or a Linux developer, you will come
+               across it. From the man page:
+            </p>
+
+            <p class="grey_monospace">
+               iptables/ip6tables - administration tool for IPv4/IPv6
+               packet filtering and NAT
+            </p>
+
+            <p>
+               In more recent years an IPv6 variant of this tool has been
+               implemented, uncreatively denoted <i>ip6tables</i> for the
+               sake of simplicity.
+            </p>
+               
+            <p>
+               Admittedly, filtering IPv6 addresses is
+               perhaps worthy of an article itself due to the current
+               prevalence in the industry for IPv4 addresses and the
+               commonality of IPv6 addresses in use among hackers and other
+               smaller online communities.
+            </p>
+
+            <p>
+               This blog post will instead focus on using the IPv4 variant.
+               To begin, start with bring up a verbose list of the current
+               filtering rules in place on a given host. Type the following
+               into a terminal:
+            </p>
+
+            <p class="grey_monospace_code">
+                iptables -vL
+            </p>
+
+            <p>
+               Upon doing so, the various uniquely defined filtering
+               groups, called <i>chains</i>, will be printed out with their
+               name (e.g. INPUT, OUTPUT) and their policy (e.g. ACCEPT,
+               DROP) and their subrules (i.e. for individual IPs or CIDR
+               ranges). Specifically, output similar to the below will be
+               displayed:
+            </p>
+
+            <p class="grey_monospace">
+               Chain INPUT (policy ACCEPT x packets, y bytes)
+               <br>
+               pkts bytes target prot opt in out source destination 
+               <br>
+               0 0 ACCEPT all -- any any anywhere anywhere
+               <br>
+               <br>
+               Chain FORWARD (policy DROP 0 packets, 0 bytes)
+               <br>
+               pkts bytes target prot opt in out source destination 
+               <br>
+               <br>
+               Chain OUTPUT (policy ACCEPT x packets, y bytes)
+               <br>
+               pkts bytes target prot opt in out source destination 
+               <br>
+               0 0 ACCEPT all -- any any anywhere anywhere
+            </p>
+
+            <p>
+               Where <i>x</i> and <i>y</i> are the number of packets and
+               total size in kilobytes or megabytes, respectively.
+               Immediately below the chain definition are the columns
+               labels, which are:
+            </p>
+
+            <ul class="paragraph_ul">
+                <li>
+                    pkts - number of packets
+                </li>
+                <li>
+                    bytes - amount in bytes / kilobytes / megabytes
+                </li>
+                <li>
+                    target - what action to take; e.g. ACCEPT packets
+                </li>
+                <li>
+                    prot - the protocol the rule applies to; e.g. udp, tcp, all
+                </li>
+                <li>
+                    opt - IPv4 options for a given rule, if uninterested then --
+                </li>
+                <li>
+                    in - interface used as input; e.g. lo, enp4s0, any 
+                </li>
+                <li>
+                    out - interface used as output; e.g. lo, enp4s0, any 
+                </li>
+                <li>
+                    source - source IP; default is anywhere, i.e. 0.0.0.0/0
+                </li>
+                <li>
+                    destination - destination IP; default is anywhere, i.e. 0.0.0.0/0
+                </li>
+            </ul>
+
+            <p>
+               To add a rule, decide which chain you wish to append to, the
+               protocol, the port and the intended action. For example, to
+               allow any SSH traffic into the given system, type the
+               following:
+            </p>
+
+            <p class="grey_monospace_code">
+                iptables -A INPUT -p tcp --dport ssh -j ACCEPT
+            </p>
+
+            <p>
+               Afterwards, the iptables INPUT chain looks like the following:
+            </p>
+
+            <p class="grey_monospace">
+                Chain INPUT (policy ACCEPT x packets, y bytes)
+                <br>
+                pkts bytes target prot opt in out source destination         
+                <br>
+                0 0 ACCEPT tcp -- any any anywhere anywhere tcp dpt:ssh
+            </p>
+
+            <p>
+               To delete a rule, use the -D flag and type the number of the
+               rule, like so:
+            </p>
+
+            <p class="grey_monospace_code">
+               iptables -D INPUT 1
+            </p>
+
+            <p>
+               Packets that the incoming from a certain port can be blocked
+               as well to prevent traffic from being accessed. This can be
+               done by setting the DROP action:
+            </p>
+
+            <p class="grey_monospace_code">
+                iptables -A INPUT -p udp --dport 35353 -j DROP
+            </p>
+
+            <p>
+               Rules can also be edited by specifying the -I flag with the
+               chain and number. Then the other flags may be specified
+               alongside to set the different attributes of the rule.
+            </p>
+
+            <p class="grey_monospace_code">
+                iptables -I OUTPUT 4 -p tcp -i enp4s0 -j DROP
+            </p>
+
+            <p>
+               Another action that can be assigned to rules is logging. Say
+               you wanted to tweak a rule to allow for a hard limit of 10
+               responses from a given IP address per second, and then have
+               it log all of the information to file. This can be done as
+               follows:
+            </p>
+
+            <p class="grey_monospace_code">
+               iptables -I INPUT 1 -m limit --limit 10/sec -j LOG --log-prefix "iptables denied: " --log-level 7
+            </p>
+
+            <p>
+               If there multiple groups of IP addresses that are being
+               rate limited for different reasons, consider setting the
+               log-prefix to something meaningful than simply the "denied"
+               text used above.
+            </p>
+
+            <p>
+               Now, all of the iptables rules that were implemented will
+               by default disappear at the next reboot or shutdown of the
+               host. To store these rules more permanently, use the save
+               commandline utility as follows to dump it to file:
+            </p>
+
+            <p class="grey_monospace_code">
+                iptables-save > /etc/iptables.rules
+            </p>
+
+            <p>
+                The rules may then be loaded using the restore program like
+                so:
+            </p>
+
+            <p class="grey_monospace_code">
+                iptables-restore &lt; /etc/iptables.rules
+            </p>
+
+            <p>
+                [insert content here]
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>
