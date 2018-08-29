@@ -36,11 +36,107 @@
             <br>
 
             <p>
-               [insert content here]
+               In the realm of modern software development, web based
+               applications are often key to the growth and success of a
+               company. In order to meet the demands of rapid feature
+               implementation, a number of frameworks have appeared to
+               allow developers to quickly create whatever is needed and
+               replace or remove other elements with ease.
+            </p>
+
+            <p>
+               One unfortunate consequence of this is that quite a lot of
+               these technologies were done under the assumption that CPU
+               speed or efficiency or parallelism would continue for many
+               more decades. In recent times the limits of silicon
+               transistors and photolithography mean that on-going speed
+               improvements are restricted to multi-threading, either on
+               multi-processor CPUs or clusters of GPUs.
+            </p>
+
+            <p>
+               With this in mind, several attempts have been made to make
+               code libraries which take advantage of these clusters.
+               Another approach is to horizontially scale via
+               virtualization and containerization.
+            </p>
+
+            <p>
+               Containers do have limits, mostly related to performance and
+               occasional memory corruption, yet they can be useful since
+               they have many unique aspects. They can be more-or-less
+               fully separated from the main operating system and are able
+               to be near-perfect clones of whatever instance they are
+               derived from.
+            </p>
+
+            <p>
+               A recent application of note is <i>docker</i>, a
+               containerization app that allows developers to spin up quick
+               instances to develop programs with litte to no risk to the
+               OS, or even test multiple Linux distros or versions of a
+               distro, should the developer require this.
+            </p>
+
+            <p>
+               Since the inception of docker, Google had been attempting to
+               extend this functionality of the containers to allow web
+               applications to have better scalability and durability. The
+               end result is <a href="https://kubernetes.io">Kubernetes</a>,
+               often abbreviated as K8s. From Wikipedia:
             </p>
 
             <p class="grey_monospace">
-               [insert content here]
+               Kubernetes is an open-source container-orchestration system
+               for automating deployment, scaling and management of
+               containerized applications.
+            </p>
+
+            <p>
+               Essentially, K8s is a tool to assist with handling a large
+               cluster of instances, for one or more applications or
+               servers. Specifically, this does differ from docker in a few
+               interesting ways:
+            </p>
+
+            <ul class="paragraph_ul">
+                <li>
+                    scale directly based on CPU usage and availability
+                </li>
+                <li>
+                    automated rollout and rollback of instances, in the
+                    style of subversioning or staging systems
+                </li>
+                <li>
+                    orchestration; allows mounting of remote storage
+                    via providers such as Google Cloud or AWS
+                </li>
+                <li>
+                    self healing, it can attempt to replace or reschedule
+                    applications or instances that fail
+                </li>
+                <li>
+                    uses internal private IP addresses, negating the need
+                    for complicated network topologies
+                </li>
+                <li>
+                    utilizes templated configuration files, similar to Chef
+                    it allows a DevOps work environment
+                </li>
+            </ul>
+
+            <p>
+               So if your web application is written with containerization
+               paradigm in mind then it could plausibly scale well based on
+               workload, have a limited ability to repair or recover from
+               errors or corruption, and have some level of cloud
+               redundancy.
+            </p>
+
+            <p>
+               While that does sound complex, it is more than a bit intriguing
+               due to all of the services it can potentially replace. With
+               that in mind, begin by...
             </p>
 
             <p class="grey_monospace_code">
