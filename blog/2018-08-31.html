@@ -30,7 +30,7 @@
             <a href="index.html">&larr; back</a>
 
             <h1>
-               2018-08-31: taking k8s for a spin - a short primer
+               2018-08-31: taking kubernetes for a spin - a short primer
             </h1>
 
             <br>
@@ -134,13 +134,33 @@
             </p>
 
             <p>
-               While that does sound complex, it is more than a bit intriguing
-               due to all of the services it can potentially replace. With
-               that in mind, begin by...
+               While that does sound complex, it is more than a bit
+               intriguing due to all of the services it can potentially
+               replace. With that in mind, begin by ensuring the machine
+               that will run Kubernetes supports hardware virtualization
+               and that it is enabled in the BIOS and operating system.
+            </p>
+
+            <p>
+               Afterwards, install kubectl and minikube via
+               <a href="https://kubernetes.io/docs/tasks/tools/install-minikube/">
+               the official documentation</a>. Both are required to
+               actually run the full suite, along with docker as well.
+            </p>
+
+            <p>
+               To summarize, kubectl allows management and fine tuning of a
+               kubernetes cluster while minikube allows for easy spin up
+               instances to make it easier during development.
+            </p>
+
+            <p>
+               With all of the components installed, start minikube via the
+               following command:
             </p>
 
             <p class="grey_monospace_code">
-                [insert content here]
+                minikube start
             </p>
 
             <br>
