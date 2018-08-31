@@ -176,6 +176,120 @@
             </p>
 
             <p>
+                If that worked, then a minikube resource should have
+                started, and now thus it can be managed via kubectl. To
+                ensure it actually started, do a quick check like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl get nodes
+            </p>
+
+            <p>
+                The output from that command will resemble something like
+                the following:
+            </p>
+
+            <p class="grey_monospace">
+                NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                STATUS&nbsp;&nbsp;&nbsp;&nbsp;
+                ROLES&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                AGE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                VERSION
+                <br>
+                minikube&nbsp;&nbsp;&nbsp;
+                Ready&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                master&nbsp;&nbsp;&nbsp;&nbsp;
+                13h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                v1.10.0
+            </p>
+
+            <p>
+                The minikube node is now available and can be adjusted and
+                configured, both via web browser and via commandline
+                interface. To enable the web interface, type the following
+                command:
+            </p>
+
+            <p class="grey_monospace_code">
+                minikube dashboard
+            </p>
+
+            <p>
+                Upon doing so, the kubernetes interface will appear in the
+                browser and allow access to the create pods and adjust
+                configuration settings of the given minikube instance.
+            </p>
+
+            <img src="2018-08-31/01.png" />
+
+            <p>
+                Feel free to browse through the various options and pages.
+                Of note are the lists of nodes and pods on this k8s server.
+                Since a minikube node is active, it is possible to spawn
+                individualized containers on it, called pods. Typically
+                these are designed to run a single command or microservice
+                or child process.
+            </p>
+
+            <p>
+                To test out if the pod creation process is working, there
+                is an image from the <a href="https://cloud.google.com/container-registry/">
+                Google Cloud Container Registry</a> labelled
+                <i>echoserver</i> which mimics whatever is thrown at it.
+                Useful for making the "Hello, world!" equivalent of a pod.
+                To do so, take advantage of the <i>use</i> feature of kubectl
+                to download the container image:
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.4 --port=8080
+            </p>
+
+            <p>
+                Assuming this ran as intended, a pod will be created with
+                the name <i>hello-minikube</i>, which can be viewed either
+                via CLI or web browser. To obtain the list of pods via
+                commandline, do the following:
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl get pods
+            </p>
+
+            <p>
+                Which yields output similar to the following:
+            </p>
+
+            <p class="grey_monospace">
+                NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;
+                READY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                STATUS&nbsp;&nbsp;&nbsp;&nbsp;
+                RESTARTS&nbsp;&nbsp;
+                AGE
+                <br>
+                hello-minikube-6c47c66d8-2bhml&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;
+                1/1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Running&nbsp;&nbsp;&nbsp;
+                0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;
+                52m
+            </p>
+
+            <p>
+                In the web browser, it can be found via the Workloads &gt;
+                Pods &gt; hello-minikube-hex-timestamp. That page shows the
+                node, status and the current quality of service, among
+                other details:
+            </p>
+
+            <img src="2018-08-31/02.png" />
+
+            <p>
                 [insert content here]
             </p>
 
