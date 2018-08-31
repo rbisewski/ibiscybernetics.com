@@ -290,7 +290,181 @@
             <img src="2018-08-31/02.png" />
 
             <p>
-                [insert content here]
+                If the status indicates that the pod is running, open the
+                instance in a browser or using wget or curl to obtain a
+                read-out of what values were passed to the pod. In this
+                case the address is 172.17.0.4:8080, so the output should
+                be something akin to this:
+            </p>
+
+            <p class="grey_monospace">
+                CLIENT VALUES:
+                <br>
+                client_address=172.17.0.1
+                <br>
+                command=GET
+                <br>
+                real path=/
+                <br>
+                query=nil
+                <br>
+                request_version=1.1
+                <br>
+                request_uri=http://172.17.0.4:8080/
+                <br>
+                <br>
+                SERVER VALUES:
+                <br>
+                server_version=nginx: 1.10.0 - lua: 10001
+                <br>
+                <br>
+                HEADERS RECEIVED:
+                <br>
+                accept=*/*
+                <br>
+                accept-encoding=identity
+                <br>
+                connection=Keep-Alive
+                <br>
+                host=172.17.0.4:8080
+                <br>
+                user-agent=Wget/1.19.5 (linux-gnu)
+                <br>
+                BODY:
+                <br>
+                -no body in request-
+            </p>
+
+            <p>
+                The pod seems ready to run, so let's attempt to send it a
+                POSIX command and see what happens. As a number of images
+                feature readme files in their root, go ahead and take a
+                gander at it using <i>cat</i>:
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl exec hello-minikube-6c47c66d8-2bhml cat README.md
+            </p>
+
+            <p>
+                It should contain a brief description and changelog of the
+                specific image.
+            </p>
+
+            <p class="grey_monospace">
+            # Echoserver
+            <br>
+            <br>
+            This is a simple server that responds with the http headers it
+            received.
+            <br>
+            Image versions &gt;= 1.4 removes the redirect introduced in 1.3.
+            <br>
+            Image versions &gt;= 1.3 redirect requests on :80 with
+            <br>
+            `X-Forwarded-Proto: http` to :443.
+            <br>
+            Image versions &gt; 1.0 run an nginx server, and implement the
+            echoserver using lua in the nginx config.
+            <br>
+            Image versions &lt;= 1.0 run a python http server instead of
+            nginx, and don't redirect any requests.
+            </p>
+
+            <p>
+                Other commands work as well, and some images even contain
+                interactive shells that allow internal adjusting and
+                development.
+            </p>
+
+            <p>
+                The pods themselves can be manipulated via supervisors
+                called <i>deployments</i> which offer finer control over
+                what happens on the k8s server. Deployments can be listed
+                in roughly the same manner as nodes and pods.
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl get deployments
+            </p>
+
+            <p>
+                The minikube instance running should have started with at
+                least one deployment, which in turn is tied to that one
+                pod. Deployments are rather simple and derive from the yaml
+                script that controls their functions. To change it, use the
+                <i>edit</i> command like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl edit deploy/hello-minikube
+            </p>
+
+            <p>
+                In a text editor the contents of the yaml script will be
+                openned for editting. For the echoserver image, part of it
+                looks like this:
+            </p>
+
+            <p class="grey_monospace">
+            # Please edit the object below. Lines beginning with a '#' will
+            <br>
+            # be ignored, and an empty file will abort the edit. If an error
+            <br>
+            # occurs while saving this file will be reopened with the
+            <br>
+            # relevant failures.
+            <br>
+            #
+            <br>
+            apiVersion: extensions/v1beta1
+            <br>
+            kind: Deployment
+            <br>
+            metadata:
+            <br>
+            &nbsp;&nbsp;annotations:
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;deployment.kubernetes.io/revision: "1"
+            <br>
+            &nbsp;&nbsp;creationTimestamp: 2018-08-29T17:18:36Z
+            </p>
+
+            <p>
+                Suppose there was a need to add a small change to an image
+                and then rollout to all of the pods handled by this
+                deployment. Tweak the revision to "2" and the deployment
+                will handle the rollout of change automatically, which
+                should occur rather fast in this case since there is only
+                one pod. To check the status of the rollout, use the
+                following command:
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl rollout status deploy/hello-minikube
+            </p>
+
+            <p>
+                If that worked, a success message will be shown. If a
+                failure occurred, consider rolling back all of the pods
+                using the <i>undo</i> feature, like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl rollout undo deploy/hello-minikube --to-revision=1
+            </p>
+
+            <p>
+                Setting revision numbers in that manner is good practice
+                and allows rollout and rollback of versions in a
+                streamlined way.
+            </p>
+
+            <p>
+                That handles some of the basics of using Kubernetes,
+                however, there are a great many features that could use
+                further explorating, such as the secrets feature that
+                allows for encryption functionality throughout the node.
             </p>
 
             <br>
