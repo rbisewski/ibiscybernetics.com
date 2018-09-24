@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>
+               2018-09-23: getting a handle on zettabytes with ZFS 
+            </h1>
+
+            <br>
+
+            <p>
+               All systems need storage and modern business, especially in
+               companies with many employees or complex mathematical and
+               scientific data. Often this means a number of large files
+               and requires a considerable amount of hard disk storage.
+            </p>
+
+            <p>
+               Existing RAID configurations demand significant hardware,
+               and some like RAID5, feature so-called "write holes" that
+               can painfully degrade performance and associated
+               consequences upon a disk failure. RAID6 can reduce quite a
+               lot of this, but it requires even more physical drives.
+            </p>
+
+            <p>
+               Given that the pace of development of disk firmware tends to
+               be faster than the physical hardware, frequently even disks
+               that feature the same physical platters can have different
+               firmware version and features. Hence to truly ensure that
+               the desired RAID is both safe and that no unforeseen minor
+               incompatibilities occur, a company is often forced to
+               invest in purchasing several additional spares up-front.
+            </p>
+
+            <p>
+               Multiple attempts to find alternatives to RAID tended to be
+               very platform dependant or vendor specific, so they tended
+               to not be widely adopted by the industry. The largest and
+               most popular of these was ZFS from Sun Microsystems, while
+               on the Linux side there was an attempt with the Btrfs file
+               system. Neither were terribly ideal since ZFS was closed
+               source and Btrfs has been in an extended beta since 2007.
+            </p>
+
+            <p>
+               Then in 2013 the OpenZFS group was able to fork the code
+               base due to the fact that Sun Microsystems had been
+               purchased by Oracle and opensourced the Solaris operating
+               system. Modern storage needs for big systems use this open
+               and feature-rich version of ZFS. From wikipedia:
+            </p>
+
+            <p class="grey_monospace">
+               ZFS is scalable, and includes extensive protection against
+               data corruption, support for high storage capacities,
+               efficient data compression, integration of the concepts of
+               filesystem and volume management, snapshots and
+               copy-on-write clones, continuous integrity checking and
+               automatic repair, RAID-Z, native NFSv4 ACLs, and can be very
+               precisely configured.
+            </p>
+
+            <p>
+                The feature list above is rather overwhelming, however, ZFS
+                is designed to make it easy to manage a diverse storage
+                ecosystem.
+            </p>
+
+            <p>
+                A word of caution to the reader; the ZFS code base uses the
+                CDDL license which is not compatible with the GPL license of
+                the Linux kernel. Ergo, you will either need to find a distro
+                that has a pluggable pre-built dkms module (e.g. Ubuntu) or
+                attempt to build the code yourself and then make a Linux
+                kernel that works with that ZFS version; thus ZFS versions
+                will <i>not</i> always work with any given Linux kernel.
+            </p>
+
+            <p>
+                ZFS works by means of storage pools, which are fundamently
+                groups of hard drives that all interact with each other.
+                Disks in another pool cannot influence with inside of a given
+                pool. At any time, existing drives can be removed or new
+                drives attached to the pool.
+            </p>
+
+            <p>
+                To create a pool, use the create command with a desired
+                name, the RAID type and a list of devices to attach to the
+                pool. For this example, we create a RAID-1 style mirrored
+                list using drives sdc and sdd and call it example_pool.
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo zpool create example_pool mirror /dev/sdc /dev/sdd
+            </p>
+
+            <p>
+                [TODO: complete the rest of this article below]
+            </p>
+
+            <p>
+                Create a volume
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo zfs create name_of_pool/volume0
+            </p>
+
+            <p>
+                Tell ZFS to start on boot-up
+            </p>
+
+            <p class="grey_monospace_code">
+                systemctl enable zfs.target
+                <br>
+                systemctl start zfs.target
+                <br>
+                systemctl enable zfs-import-cache
+                <br>
+                systemctl enable zfs-mount
+                <br>
+                systemctl enable zfs-import.target
+            </p>
+
+            <p>
+                Consider scrubbing the pool at least once a week.
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo zpool scrub name_of_pool
+            </p>
+
+            <p>
+                Create, list, rollback, clone and destroy snapshots
+            <p>
+
+            <p class="grey_monospace_code">
+                sudo zfs snapshot name_of_pool/volume1@123456
+                <br>
+                sudo zfs list -t snapshot -o name,creation
+                <br>
+                sudo zfs rollback -r name_of_pool/volume1@123456
+                <br>
+                sudo zfs clone name_of_pool/volume1@21082011 name_of_pool/volume1_restore
+                <br>
+                sudo zfs destroy name_of_pool/volume1@123456
+            </p>
+
+            <p>
+                Split the pool, either to create new separate pools or to replace disks
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo zpool split name_of_pool name_of_brand_new_pool /dev/sda
+            </p>
+
+            <p>
+                Attach a new drive to a pool with an existing device
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo zpool attach name_of_pool /dev/existing_sd /dev/new_sd
+            </p>
+
+            <p>
+                Check history
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo zpool history
+            </p>
+
+            <p>
+                Monitor I/O
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo zpool iostat 6
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>
