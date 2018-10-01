@@ -116,7 +116,7 @@
                 To create a pool, use the create command with a desired
                 name, the RAID type and a list of devices to attach to the
                 pool. For this example, we create a RAID-1 style mirrored
-                list using drives sdc and sdd and call it example_pool.
+                list using drives by-id, call it example_pool.
             </p>
 
             <p class="grey_monospace_code">
@@ -223,7 +223,21 @@
             </p>
 
             <p>
-                [TODO: complete the rest of this article below]
+                As an aside, you can also mix-and-match hard drives of
+                multiple sizes.
+            </p>
+
+            <p>
+                For interest, if you have a set of mechanical platter drives
+                and SSD with an operating system installed, you could
+                preserve your data by making the SSD the first drive of a pool
+                and then attach mechanical drives as a mirror.
+            </p>
+
+            <p>
+                That covers most of the important commands of ZFS, however,
+                there are still quite a lot of other features available.
+                Consider reading the man page if you are curious.
             </p>
 
             <br>
