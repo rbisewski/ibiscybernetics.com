@@ -120,15 +120,22 @@
             </p>
 
             <p class="grey_monospace_code">
-                sudo zpool create example_pool mirror /dev/sdc /dev/sdd
+                sudo zpool create example_pool mirror \ 
+                <br>
+                /dev/disk/by-id/ata-SERIAL_NUMBER_12345 \ 
+                <br>
+                /dev/disk/by-id/ata-SERIAL_NUMBER_23456
             </p>
 
             <p>
-                [TODO: complete the rest of this article below]
+                The mirrors created by ZFS tend to be very robust and while
+                other RAID styles are possible, they are much less
+                flexible. A basic overview of some of the more interesting
+                commands are demonstrated below.
             </p>
 
             <p>
-                Create a volume
+                Create a volume:
             </p>
 
             <p class="grey_monospace_code">
@@ -136,7 +143,7 @@
             </p>
 
             <p>
-                Tell ZFS to start on boot-up
+                Tell ZFS to start on boot-up:
             </p>
 
             <p class="grey_monospace_code">
@@ -152,7 +159,8 @@
             </p>
 
             <p>
-                Consider scrubbing the pool at least once a week.
+                Consider scrubbing the pool at least once a week to ensure
+                proper caching performance:
             </p>
 
             <p class="grey_monospace_code">
@@ -160,7 +168,7 @@
             </p>
 
             <p>
-                Create, list, rollback, clone and destroy snapshots
+                Create, list, rollback, clone and destroy snapshots:
             <p>
 
             <p class="grey_monospace_code">
@@ -176,23 +184,30 @@
             </p>
 
             <p>
-                Split the pool, either to create new separate pools or to replace disks
+                Split the pool, either to create new separate pools or to
+                replace disks:
             </p>
 
             <p class="grey_monospace_code">
-                sudo zpool split name_of_pool name_of_brand_new_pool /dev/sda
+                sudo zpool split name_of_pool name_of_brand_new_pool \
+                <br>
+                /dev/ata-SERIAL_NUMBER_23456
             </p>
 
             <p>
-                Attach a new drive to a pool with an existing device
+                Attach a new drive to a pool with an existing device:
             </p>
 
             <p class="grey_monospace_code">
-                sudo zpool attach name_of_pool /dev/existing_sd /dev/new_sd
+                sudo zpool attach name_of_pool \
+                <br>
+                /dev/ata-SERIAL_NUMBER_of_existing_device \
+                <br>
+                /dev/ata-SERIAL_NUMBER_of_brand_new_hdd
             </p>
 
             <p>
-                Check history
+                Check history of all of the pools or of a given pool:
             </p>
 
             <p class="grey_monospace_code">
@@ -200,11 +215,15 @@
             </p>
 
             <p>
-                Monitor I/O
+                Monitor the current I/O of a pool, every 6 seconds:
             </p>
 
             <p class="grey_monospace_code">
                 sudo zpool iostat 6
+            </p>
+
+            <p>
+                [TODO: complete the rest of this article below]
             </p>
 
             <br>
