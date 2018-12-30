@@ -122,13 +122,14 @@
             <p class="grey_monospace_code">
                 sudo zpool create example_pool mirror \ 
                 <br>
-                /dev/disk/by-id/ata-SERIAL_NUMBER_12345 \ 
+                /dev/disk/by-id/ata-SERIAL_NUMBER_12345_part1 \
                 <br>
-                /dev/disk/by-id/ata-SERIAL_NUMBER_23456
+                /dev/disk/by-id/ata-SERIAL_NUMBER_23456_part1
             </p>
 
             <p>
-                The mirrors created by ZFS tend to be very robust and while
+                Where '_part1' refers to the intended partition. The
+                mirrors created by ZFS tend to be very robust and while
                 other RAID styles are possible, they are much less
                 flexible. A basic overview of some of the more interesting
                 commands are demonstrated below.

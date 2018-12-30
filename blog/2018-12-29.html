@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>
+               2018-12-29: preparing Ubuntu Server 18.04 for the Raspberry Pi 3B+
+            </h1>
+
+            <br>
+
+            <p>
+               The Raspberry Pi 3B+ was the leading version of the small
+               yet effective computer system in 2018. While it was not too
+               large a change from the previous Pi 3B, it introduced a number
+               of minor firmware changes that broke support for existing OS images.
+            </p>
+
+            <p>
+               Since the current phase of my career features quite a lot of
+               system administration duties, small computers like the Pi make
+               it easy to run simple tasks in a non-containerized environment.
+            </p>
+
+            <p>
+               However I was recently dismayed during my attempts to migrate
+               the SD cards from Pi 3B to 3B+ resulted in a litany of errors.
+               In addition, there was no meaningful upgrade path from Ubuntu
+               16.04 to 18.04 on the Pi since quite a lot of people use the
+               standard Raspian so everything else tends to be out of date.
+            </p>
+
+            <p>
+               Understandably, many clients however prefer having the
+               maximum possible compatibility with desktop Ubuntu LTS, so
+               I was forced to do some more digging.
+            </p>
+
+            <p>
+               A beta image of Ubuntu 18.04 LTS for the Raspberry Pi 3B
+               exists and can be found
+               <a href="http://cdimage.ubuntu.com/releases/18.04/beta/">here</a>,
+               however, it does not support some minor variants of 3B, notably
+               the 3B+ is not supported.
+            </p>
+
+            <p>
+               Looking at the Raspberry Pi spec sheets carefully, I figured
+               since the physical CPU had not changed between 3B and 3B+ that
+               there was no Linux limitation against it working. So I
+               proceeded to write the image to the SD card as per usual:
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo unxz ubuntu-18.04-beta-preinstalled-server-arm64+raspi3.img.xz
+                <br>
+                <br>
+                sudo dd if=ubuntu-18.04-beta-preinstalled-server-arm64+raspi3.img \
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;of=/dev/sdc bs=4M conv=fsync status=progress
+            </p>
+
+            <p>
+               I plugged that into my Pi and, sadly, it was unable to boot.
+               It remained stuck at the rainbow colour palette startup
+               screen. So my guess was the bootloader had failed somehow.
+            <p>
+
+            <p>
+               Plugging the SD back into my desktop, I did a lsblk to
+               determine /boot partition location. Then I did a ls to see what
+               what files were present. Mostly firmware blobs and vmlinuz and
+               the infamous config.txt which controls the Pi boot process. So
+               I opened it with vim noticed that kernel was pointing to a
+               uboot file which was not present. Bingo!
+            </p>
+
+            <p>
+               Thankfully the Broadcom CPU used in the Pi has been pushed
+               to kernel upstream, which is what Ubuntu LTS relies on, so I
+               could just delete the device_tree_address line used by
+               u-boot and adjust several lines in the config.txt to point
+               to the plain ol' Linux vmlinuz.
+            </p>
+
+            <p class="grey_monospace_code">
+                kernel=vmlinuz
+                <br>
+                initramfs initrd.img followkernel
+                <br>
+                arm_control=0x200
+                <br>
+                device_tree_address=0x0200000 # -- delete this line --
+            </p>
+
+            <p>
+               As an aside, I noticed many of the Raspberry Pi blobs for the
+               other devices were missing. So if you need those, you'll want
+               to obtain them via the official
+               <a href="https://github.com/raspberrypi/firmware/tree/master/boot">GitHub repo</a>.
+               In my case I only needed the ComputeModule3 blob, which is
+               bcm2710-rpi-cm3.dtb, so I copied that into the boot partition.
+            </p>
+
+            <p>
+               With that, my Raspberry Pi 3B+ was able to boot the latest
+               Ubuntu 18.04 LTS. Since this is Ubuntu, the normal username
+               and password combo is 'ubuntu' for both, and I was able to
+               login just fine.
+            </p>
+               
+            <p>
+               Finally, for a 4-core computer with only 1GB of RAM, the
+               commandline use was quite fast and it didn't need more than
+               about 150Mb at any given time. I was able to trim that by
+               quite a bit removing the cloud-init services and got it down
+               to about 110Mb.
+            </p>
+
+            <p>
+               Thus I was able to use the humble Raspberry Pi for
+               semi-important business goals and so wraps up this blog post.
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>
