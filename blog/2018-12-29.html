@@ -30,7 +30,7 @@
             <a href="index.html">&larr; back</a>
 
             <h1>
-               2018-12-29: preparing Ubuntu Server 18.04 for the Raspberry Pi 3B+
+               2018-12-29: preparing Ubuntu Server 18.04.2 for the Raspberry Pi 3B+
             </h1>
 
             <br>
@@ -63,9 +63,9 @@
             </p>
 
             <p>
-               A beta image of Ubuntu 18.04 LTS for the Raspberry Pi 3B
-               exists and can be found
-               <a href="http://cdimage.ubuntu.com/releases/18.04/beta/">here</a>,
+               An image of Ubuntu 18.04.2 LTS for the Raspberry Pi 3B exists
+               and can be found
+               <a href="http://cdimage.ubuntu.com/releases/18.04/release/">here</a>,
                however, it does not support some minor variants of 3B, notably
                the 3B+ is not supported.
             </p>
@@ -78,10 +78,10 @@
             </p>
 
             <p class="grey_monospace_code">
-                sudo unxz ubuntu-18.04-beta-preinstalled-server-arm64+raspi3.img.xz
+                sudo unxz ubuntu-18.04.2-preinstalled-server-arm64+raspi3.img.xz
                 <br>
                 <br>
-                sudo dd if=ubuntu-18.04-beta-preinstalled-server-arm64+raspi3.img \
+                sudo dd if=ubuntu-18.04.2-preinstalled-server-arm64+raspi3.img \
                 <br>
                 &nbsp;&nbsp;&nbsp;&nbsp;of=/dev/sdc bs=4M conv=fsync status=progress
             </p>
@@ -130,7 +130,7 @@
 
             <p>
                With that, my Raspberry Pi 3B+ was able to boot the latest
-               Ubuntu 18.04 LTS. Since this is Ubuntu, the normal username
+               Ubuntu 18.04.2 LTS. Since this is Ubuntu, the normal username
                and password combo is 'ubuntu' for both, and I was able to
                login just fine.
             </p>
