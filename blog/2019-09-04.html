@@ -38,7 +38,8 @@
             <p>
                Kubernetes allows developers and sysadmins to easily create
                large interconnected systems of dockers across multiple nodes
-               within a given network.
+               within a given network. It is quite useful and an essential
+               part of the modern system stack.
             </p>
 
             <p>
@@ -96,14 +97,27 @@
 
             <p class="grey_monospace_code">
                 ssh-keygen -f ~/.ssh/k8s_key -t ed25519
+                <br>
+                cat ~/.ssh/k8s_key >> ~/.ssh/authorized_keys
+                <br>
                 sudo systemctl enable sshd
+                <br>
                 sudo systemctl restart sshd
             </p>
 
             <p>
                Create a /kubernetes folder, assign ownership of that folder
-               to your user, add a file called cluster.yml to that folder with
-               the following contents:
+               to your user, add a file called cluster.yml to that folder:
+            </p>
+
+            <p class="grey_monospace_code">
+                mkdir /kubernetes/
+                <br>
+                vim /kubernetes/cluster.yml
+            </p>
+
+            <p>
+               Fill that file with the below contents:
             </p>
 
             <p class="grey_monospace_code">
@@ -170,7 +184,7 @@
 
             <p>
                The process is slow, but eventually you will end up with a
-               Kubernetes cluster if errors occur.
+               Kubernetes cluster if no errors occur.
             </p>
 
             <p>
@@ -190,7 +204,7 @@
             </p>
 
             <p>
-               With Metal LB setup, next create a layer-2 setup in order to
+               With Metal LB installed, create a layer-2 setup in order to
                specify which IP addresses can be used for deployments. In this
                example, it is assume your router is setup to treat
                10.0.0.128-10.0.0.253 as an empty, static range. It can be done
