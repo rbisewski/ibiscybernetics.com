@@ -190,7 +190,191 @@
             </p>
 
             <p>
-               [insert content here]
+               With Metal LB setup, next create a layer-2 setup in order to
+               specify which IP addresses can be used for deployments. In this
+               example, it is assume your router is setup to treat
+               10.0.0.128-10.0.0.253 as an empty, static range. It can be done
+               like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                mkdir /kubernetes/deployments/
+                <br>
+                vim /kubernetes/deployments/layer2.yml
+            </p>
+
+            <p>
+               Add the following content to that Yaml file:
+            </p>
+
+            <p class="grey_monospace_code">
+                apiVersion: v1
+                <br>
+                kind: ConfigMap
+                <br>
+                metadata:
+                <br>
+                &nbsp;&nbsp;namespace: metallb-system
+                <br>
+                &nbsp;&nbsp;name: config
+                <br>
+                data:
+                <br>
+                &nbsp;&nbsp;config: |
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;address-pools:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;- name: default
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protocol: layer2
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addresses:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 10.0.0.128-10.0.0.253
+            </p>
+
+            <p>
+               Assuming that IP range is accessible to your Kubernetes cluster,
+               it ought to be possible to add this to your cluster like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl --kubeconfig=/kubernetes/kube_config_cluster.yml apply -f \
+                &nbsp;&nbsp;&nbsp;&nbsp;/kubernetes/deployments/layer2.yml
+            </p>
+
+            <p>
+               If there were no errors, then this installed correctly.
+               Nonetheless consider testing it with some sample deployments. To
+               do this, you'll need a pod and a service. Both can be done with
+               Kubernetes deployment Yaml files.
+            </p>
+
+            <p>
+               Create a sample pod deployment like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                vim /kubernetes/deployments/generic-pod-metallb.yml
+            </p>
+
+            <p>
+               Fill it with the following:
+            </p>
+
+            <p class="grey_monospace_code">
+                apiVersion: apps/v1
+                <br>
+                kind: Deployment
+                <br>
+                metadata:
+                <br>
+                &nbsp;&nbsp;name: generic-deployment
+                <br>
+                spec:
+                <br>
+                &nbsp;&nbsp;selector:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;matchLabels:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app: generic-deployment
+                <br>
+                &nbsp;replicas: 2
+                <br>
+                &nbsp;template:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;metadata:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;labels:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app: generic-deployment
+                <br>
+                &nbsp;&nbsp;spec:
+                <br>
+                &nbsp;&nbsp;&nbsp;containers:
+                <br>
+                &nbsp;&nbsp;&nbsp;- name: nginx
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image: nginx:stable
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;imagePullPolicy: Always
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ports:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- containerPort: 80
+            </p>
+
+            <p>
+               Create a sample service like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                vim /kubernetes/deployments/generic-service-for-pod-metallb.yml
+            </p>
+
+            <p>
+               Fill it with the following:
+            </p>
+
+            <p class="grey_monospace_code">
+                apiVersion: v1
+                <br>
+                kind: Service
+                <br>
+                metadata:
+                <br>
+                &nbsp;&nbsp;name: generic-deployment
+                <br>
+                &nbsp;&nbsp;annotations:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;metallb.universe.tf/address-pool: production-public-ips
+                <br>
+                spec:
+                <br>
+                &nbsp;&nbsp;ports:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;- port: 80
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;targetPort: 80
+                <br>
+                &nbsp;&nbsp;selector:
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;app: generic-deployment
+                <br>
+                &nbsp;&nbsp;type: LoadBalancer
+                <br>
+                &nbsp;&nbsp;loadBalancerIP: 10.0.0.129
+            </p>
+
+            <p>
+               The deployment file creates a container, which consists of a
+               generic nginx image with the latest stable, and exposes it to
+               port 80 on the internal docker network. The service file
+               assigns the image within the pod an IP address of 10.0.0.129
+               and then opens port 80 on that address.
+            </p>
+
+            <p>
+               Attempt to apply those two files to your cluser by running the
+               following commands:
+            </p>
+
+            <p class="grey_monospace_code">
+                kubectl --kubeconfig=/kubernetes/kube_config_cluster.yml apply -f \
+                <br>
+                &nbsp;&nbsp;generic-nginx-metallb.yml
+                <br>
+                <br>
+                kubectl --kubeconfig=/kubernetes/kube_config_cluster.yml apply -f \
+                <br>
+                &nbsp;&nbsp;generic-service-metallb.yml
+            </p>
+
+            <p>
+               If no errors occurred, then direct your browser to 10.0.0.129
+               to check if you can see the default nginx landing page. That's
+               it, you now have a load balanced website with an assigned IP
+               and two replicas.
             </p>
 
             <br>
