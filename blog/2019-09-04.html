@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>
+               2019-09-04: setting up K8s with rke and Metal LB
+            </h1>
+
+            <br>
+
+            <p>
+               Kubernetes allows developers and sysadmins to easily create
+               large interconnected systems of dockers across multiple nodes
+               within a given network.
+            </p>
+
+            <p>
+               To get started, install kubectl. On Ubuntu 18.04 LTS it can be done like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo apt-get update && sudo apt-get install -y apt-transport-https
+                <br>
+                <br>
+                curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo \
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;apt-key add -
+                <br>
+                <br>
+                echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo \
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;tee -a /etc/apt/sources.list.d/kubernetes.list
+                <br>
+                <br>
+                sudo apt-get update
+                <br>
+                sudo apt-get install -y kubectl
+            </p>
+
+            <p>
+               On Arch Linux it can be done like so:
+            </p>
+
+            <p class="grey_monospace_code">
+                sudo pacman -S kubectl
+            </p>
+
+            <p>
+                The rancher rke tool is the fastest way to setup a K8s cluster
+                on any machine. Download it and install it using the following
+                commands:
+            </p>
+
+            <p class="grey_monospace_code">
+                wget https://github.com/rancher/rke/releases/download/v0.3.0-rc9/rke_linux-amd64
+                <br>
+                sudo mv rke_linux-amd64 /usr/local/bin/rke
+                <br>
+                sudo chown root:root /usr/local/bin/rke
+                <br>
+                sudo chmod 0755 /usr/local/bin/rke
+            </p>
+
+            <p>
+                Kubernetes needs a ssh key in order to interact with it. Create
+                a simply passphraseless one, and ensure you have an ssh server
+                running on port 22:
+            </p>
+
+            <p class="grey_monospace_code">
+                ssh-keygen -f ~/.ssh/k8s_key -t ed25519
+                sudo systemctl enable sshd
+                sudo systemctl restart sshd
+            </p>
+
+            <p>
+               Create a /kubernetes folder, assign ownership of that folder
+               to your user, add a file called cluster.yml to that folder with
+               the following contents:
+            </p>
+
+            <p class="grey_monospace_code">
+               cluster_name: simple-k8s-cluster
+               <br>
+               <br>
+               network:
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plugin: flannel
+               <br>
+               <br>
+               ssh_key_path: /home/USERNAME/.ssh/k8s_key
+               <br>
+               <br>
+               ignore_docker_version: true
+               <br>
+               <br>
+               nodes:
+               <br>
+               &nbsp;&nbsp;- address: 10.0.0.3
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;internal_address: 10.0.0.3
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;hostname_override: 10.0.0.3
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;port: 22
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;user: USERNAME
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;role: [controlplane,worker,etcd]
+               <br>
+               <br>
+               services:
+               <br>
+               &nbsp;&nbsp;etcd:
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;snapshot: true
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;creation: 6h
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;retention: 24h
+               <br>
+               &nbsp;&nbsp;health_check:
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;port: 6443
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;request_line: GET /healthz HTTP/1.1
+               <br>
+               &nbsp;&nbsp;kube-api:
+               <br>
+               &nbsp;&nbsp;&nbsp;&nbsp;service_node_port_range: 8000-32767
+            </p>
+
+            <p>
+               Replace USERNAME with the username of your Linux user, and
+               replace 10.0.0.3 with the IP address of your ethernet card. Then
+               cd to the /kubernetes directory and run these commands to spin
+               up your Kubernetes cluster using rke:
+            </p>
+
+            <p class="grey_monospace_code">
+               rke up --config cluster.yml
+            </p>
+
+            <p>
+               The process is slow, but eventually you will end up with a
+               Kubernetes cluster if errors occur.
+            </p>
+
+            <p>
+               Now Kubernetes by itself isn't too much more than docker,
+               however, a number of plugins and extensions exist to expand
+               the functionality. One of them, Metal LB, allows both easy
+               load balancing of deployed pods but also the ability to assign
+               IP ranges (both public and private) to a given deployment.
+            </p>
+
+            <p>
+               Install Metal LB onto your Kubernetes cluster like so:
+            </p>
+
+            <p class="grey_monospace_code">
+               kubectl --kubeconfig=/kubernetes/kube_config_cluster.yml apply -f \ https://raw.githubusercontent.com/google/metallb/v0.8.1/manifests/metallb.yaml \ --namespace=metallb-system
+            </p>
+
+            <p>
+               [insert content here]
+            </p>
+
+            <br>
+        </div>
+    </body>
+</html>
