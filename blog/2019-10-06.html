@@ -30,7 +30,7 @@
             <a href="index.html">&larr; back</a>
 
             <h1>
-               2019-10-06: the geometry of game programming
+               2019-10-06: the mathematics of game programming
             </h1>
 
             <br>
@@ -47,19 +47,60 @@
             <p>
                Vector arithmetic is very common, typically for determining
                line location and length, or the relative location of a point
-               for a given set of points.
+               for a given set of points. For vectors that consist of a
+               single vertex of the style of (x,y,z), the simplest operations
+               of addition and subtraction apply like so:
+            </p>
+
+            <p class="grey_monospace_code">
+               (1,2,3) + (0,2,2) = (1,4,5)
+               <br>
+               (1,2,3) - (0,2,2) = (1,0,1)
+            </p>
+
+            <p>
+               For multiple line vectors, basic knowledge of geometry and
+               trigonometry of the angles apply. Some simple visualizations:
             </p>
 
             <img src="2019-10-06/01.png" />
 
             <p>
-               Dot product ... [insert content here]
+               Vector dot product values are useful for many things, such as
+               calculating diffuse lighting or player position relative to
+               another character. Specifically, a vector dot product is a
+               mathematical operation on two vectors, which returns a number.
+               Typically it is written as...
+            </p>
+
+            <p class="grey_monospace_code">
+                dot product = u . v
+            </p>
+
+            <p>
+               A good way to visualize this is as follows:
             </p>
 
             <img src="2019-10-06/02.png" />
 
             <p>
-               Cross product ... [insert content here]
+               Vector cross products are also operations on two vectors,
+               wherein the result is a third vector which is perpendicular to
+               the first two and has a length that is an average of both
+               lengths. These are quite useful for a number of applications,
+               notably collision detections; e.g. between the player and the
+               wall, the cross product vector would be the "adjusted" path
+               that the player would take due to the wall colliding. Typically
+               they are written as:
+            </p>
+
+            <p class="grey_monospace_code">
+                cross product = u x v
+            </p>
+
+            <p>
+               This can be visualized as follows, where the blue line is the
+               cross product:
             </p>
 
             <img src="2019-10-06/03.png" />
