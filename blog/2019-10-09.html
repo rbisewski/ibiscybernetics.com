@@ -45,11 +45,34 @@
             </p>
 
             <p>
-               Vector arithmetic is very common, typically for determining
-               line location and length, or the relative location of a point
-               for a given set of points. For vectors that consist of a
-               single vertex of the style of (x,y,z), the simplest operations
-               of addition and subtraction apply like so:
+               Before we begin, there is an essential concept that will be
+               discussed, which while not being mathematical in nature,
+               serves as the base for most games. Specifically, the concept
+               of the "game loop" which often consist of:
+            </p>
+
+            <p class="grey_monospace_code">
+                1. process input
+                <br>
+                2. update game
+                <br>
+                3. render
+            </p>
+
+            <p>
+               This basic flow continues infinitely and allows the developer
+               to handle whatever input it received from the player, then
+               update the game world with whatever variables are at play, then
+               render the sprites or textures or models or physics, and
+               finally start over at the beginning.
+            </p>
+
+            <p>
+               Now, in games vector arithmetic is very common, typically for
+               determining line location and length, or the relative location
+               of a point for a given set of points. For vectors that consist
+               of a single vertex of the style of (x,y,z), the simplest
+               operations of addition and subtraction apply like so:
             </p>
 
             <p class="grey_monospace_code">
@@ -70,7 +93,7 @@
                calculating diffuse lighting or player position relative to
                another character. Specifically, a vector dot product is a
                mathematical operation on two vectors, which returns a number.
-               Typically it is written as...
+               Formulaically this is...
             </p>
 
             <p class="grey_monospace_code">
@@ -90,8 +113,8 @@
                lengths. These are quite useful for a number of applications,
                notably collision detections; e.g. between the player and the
                wall, the cross product vector would be the "adjusted" path
-               that the player would take due to the wall colliding. Typically
-               they are written as:
+               that the player would take due to collision with a wall.
+               Formulaically this is...
             </p>
 
             <p class="grey_monospace_code">
@@ -118,9 +141,56 @@
             <img src="2019-10-09/04.png" />
 
             <p>
-            When it comes to the concept of collisions,
-            <a href="https://en.wikipedia.org/wiki/Minimum_bounding_box">bounding boxes</a>
-            are an important concept since they...
+               When it comes to the concept of collisions,
+               <a href="https://en.wikipedia.org/wiki/Minimum_bounding_box">bounding boxes</a>
+               are an important concept since they can define the minimum and
+               maximum extent of an object, and thus, allows for the creation
+               of walls that can block the path of a game character from
+               moving in that direction.
+            </p>
+
+            <p>
+               For a rectangle, the bounding box would be as follows, where
+               lx is the x-coord of the largest dimension and wy is the
+               y-coord of the smallest dimension:
+            </p>
+
+            <p class="grey_monospace_code">
+                bounding box of a rectangle, length min = [lx1 - lx2, ly1 - ly2]
+                <br>
+                bounding box of a rectangle, length max = [lx1 + lx2, ly1 + ly2]
+                <br>
+                bounding box of a rectangle, width min &nbsp;= [wx1 - wx2, wy1 - wy2]
+                <br>
+                bounding box of a rectangle, width max &nbsp;= [wx1 + wx2, wy1 + wy2]
+            </p>
+
+            <p>
+               For a circle, the bounding box would as follows, where cx is
+               x-coord of the centre of the circle, and r is the radius:
+            </p>
+
+            <p class="grey_monospace_code">
+                bounding box of a circle, min = [cx - r, cy - r]
+                <br>
+                bounding box of a circle, max = [cx + r, cy + r]
+            </p>
+
+            <p>
+               For a sphere, the bounding box would be the below:
+            </p>
+
+            <p class="grey_monospace_code">
+                bounding box of a sphere, min = [cx - r, cy - r, cz - r]
+                <br>
+                bounding box of a sphere, max = [cx + r, cy + r, cz + r]
+            </p>
+
+            <p>
+               A related concept to the bounding box is the
+               <a href="https://en.wikipedia.org/wiki/Bounding_sphere">bounding sphere</a>
+               which is similar but using spheres as a cheap way of reducing
+               excessive surfaces to collide as an alternative to using boxes.
             </p>
 
             <br>
