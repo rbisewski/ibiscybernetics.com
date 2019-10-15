@@ -194,6 +194,27 @@
                mutually exclusive and involves locks.
             </p>
 
+            <p>
+               Maps and sets in C++ are the classic sorted associative
+               containers, with O(log n) access / insertion / erase, and
+               O(1) move complexity. Typically they are implemented as a
+               red / black tree, which is not cache-friendly and the lookup
+               time is not constant. In C++11 this is addressed by structures
+               like std::unordered_set and std::unordered_map, which have
+               average constant time on insert / erase / lookup.
+            </p>
+
+            <p>
+               An alternative to the standard hash map or set, there is also
+               the idea of "open addressing" which offers better hash
+               performance, but it has a very high space and time requirement.
+            </p>
+
+            <p>
+               If you find you have difficulty with cache-misses, try using
+               VTune to gather data about bottlenecks in code.
+            </p>
+
             <br>
         </div>
     </body>
