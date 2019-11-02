@@ -30,7 +30,7 @@
             <a href="index.html">&larr; back</a>
 
             <h1>
-               2019-10-25: common tree data structures in programming
+               2019-11-02: common tree data structures in programming
             </h1>
 
             <br>
@@ -41,8 +41,8 @@
                 information by featuring nodes that branch out from some
                 central starting point, and do so in a formulaic way. In
                 particular there are many types of trees, including the
-                B and A-B and R-B and Monte Carlo; along with search
-                patterns like A*.
+                B and A-B and R-B; along with search patterns like A* and
+                the Monte Carlo tree search.
             </p>
 
             <p>
@@ -64,16 +64,48 @@
                 A red-black tree is similar in concept to the B-tree in that
                 it is a kind of self-balancing binary search tree. Most
                 notably each node contains an extra bit that stores whether it
-                is "red" or "black". The purpose of the colour is to ensure
-                that the tree remains balanced during insertion and deletions.
-                This feature constrains how unbalanced a tree can become in
-                the worse case scenario, and admittedly while the algorithm is
-                not perfect, it will nonetheless yield a search or insertion
-                or deletion operation in O(n log n) time.
+                is "red" or "black".
             </p>
 
             <p>
-                [insert content here]
+                In a red-black tree, the purpose of the colour is to ensure
+                that the tree remains balanced during insertion and deletions.
+                This feature constrains how unbalanced a tree can become in
+                the worse case scenario, and admittedly while the algorithm
+                is not perfect, it will nonetheless yield a search or
+                insertion or deletion operation in O(n log n) time.
+            </p>
+
+            <p>
+                The A* searching is a graph traversal and path search
+                algorithm which is a best-first search that is formulated
+                in terms of weighted graphs. Starting from a specific node
+                of a graph, it aims to find a path to the given goal node
+                having the smallest distance or shortest time.
+            </p>
+
+            <p>
+                When implementing A* searching, a feature to consider is that
+                this algorithm works by maintaining a tree structure of paths
+                originating at the start node and extending these paths one
+                edge at a time untils its termination criterion is
+                satisfied; e.g. a certain distance or value.
+            </p>
+
+            <p>
+                Monte Carlo tree search is a heuristic search algorithm for
+                decisioning, often used as part of an AI implementation in
+                video games. Most famously it was used by Google Deepmind for
+                their AlphaGo software.
+            </p>
+
+            <p>
+                In particular the Monte Carlo tree search relies on the
+                <a href="https://en.wikipedia.org/wiki/Monte_Carlo_method">Monto Carlo method</a>
+                which when combined with a search tree algorithm, allows for
+                a way to store past and previous decisions in order to yield
+                recursive rollout and backtracking and adaptive sampling
+                choices for the final decision made by the AI.
             </p>
 
             <br>
