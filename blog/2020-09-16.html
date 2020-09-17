@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>
+               2020-09-17: a brief overview of OpenStack
+            </h1>
+
+            <br>
+
+            <p>
+                Several independent cloud companies depend on a unique
+                operating system that allows sysadmins to take advantage of
+                the numerous resources that might be present in a datacentre,
+                notably compute power or storage or networking capability.
+            </p>
+
+            <p>
+                Called <a href="https://www.openstack.org/software/">OpenStack</a>
+                it allows for many of the features that one might expect from
+                GCP, AWS, or Azure. A summary of some of the components are
+                listed below:
+            </p>
+
+            <ul>
+                <li>
+                    <span>Nova:</span>
+                    <span>a compute instance, typical in the form of a VM</span>
+                </li>
+                <br>
+                <li>
+                    <span>Zun:</span>
+                    <span>container service that spins up containers backed by different technologies</span>
+                </li>
+                <br>
+                <li>
+                    <span>Qinling:</span>
+                    <span>platform to support serverless function, akin to AWS Lambda</span>
+                </li>
+                <br>
+                <li>
+                    <span>Ironic:</span>
+                    <span>baremetal provisioning service</span>
+                </li>
+                <br>
+                <li>
+                    <span>Cyborg:</span>
+                    <span>general purpose framework for handling accelerators, such as GPUs, FPGAs</span>
+                </li>
+                <br>
+                <li>
+                    <span>Swift:</span>
+                    <span>object storage, similar to AWS buckets</span>
+                </li>
+                <br>
+                <li>
+                    <span>Cinder:</span>
+                    <span>block storage, similar to persistent volumes in GCP</span>
+                </li>
+                <br>
+                <li>
+                    <span>Manila:</span>
+                    <span>coordinated access to shared or distributed file systems</span>
+                </li>
+                <br>
+                <li>
+                    <span>Neutron:</span>
+                    <span>networking functionality, similar to CNI</span>
+                </li>
+                <br>
+                <li>
+                    <span>Octavia:</span>
+                    <span>load balancer</span>
+                </li>
+                <br>
+                <li>
+                    <span>Designate:</span>
+                    <span>DNS functionality</span>
+                </li>
+                <br>
+                <li>
+                    <span>Keystone:</span>
+                    <span>identity service</span>
+                </li>
+                <br>
+                <li>
+                    <span>Zaqar:</span>
+                    <span>messaging service, similar to SQS or SNS</span>
+                </li>
+                <br>
+                <li>
+                    <span>Magnum:</span>
+                    <span>container orchestration engine, for stuff like Docker Swarm, Kubernetes, Mesos</span>
+                </li>
+                <br>
+                <li>
+                    <span>Trove:</span>
+                    <span>database provision service, for relational and non-relational engines</span>
+                </li>
+            </ul>
+
+            <p>
+                Of note are the Zun Capsules, which is roughly equal to
+                Kubernetes Pods, which use Neutron as the networking
+                component, and Cinder as the block storage. This allows for
+                a Kubernetes-like environment similar to other Cloud vendors.
+                Additional information about the various OpenStack components
+                can be found <a href="https://www.openstack.org/software/project-navigator/openstack-components#openstack-services">here</a>.
+            </p>
+        </div>
+    </body>
+</html>
