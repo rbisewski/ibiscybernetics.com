@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>
+               2020-09-17: examining the different Kubernetes network technologies
+            </h1>
+
+            <br>
+
+            <p>
+                Kubernetes itself relies on network plugins in order to allow
+                pods to talk to each other and also to communicate through the
+                kube proxy.
+            </p>
+
+            <p>
+                Generally there are two types; the first type are
+                CNI plugins which align with the the appc or CNI spec and
+                designed for interoperability; the second type are kubenet
+                plugins which merely implement a basic <i>cbr0</i> via the
+                <i>bridge</i> and <i>host-local</i> CNI plugins.
+            </p>
+
+            <p>
+                A list of them are detailed below:
+            </p>
+
+            <ul>
+                <li>
+                    <span>noop:</span>
+                    <span>
+                        default if no kubelet network plugin, sets <i>net/bridge/bridge-nf-call-iptables=1</i>
+                        to allow Docker bridge-like networking via iptables
+                    </span>
+                </li>
+                <br>
+                <li>
+                    <span>kubenet:</span>
+                    <span>an incredibly basic network plugin on Linux, typically for clusters with a single node</span>
+                </li>
+                <br>
+                <li>
+                    <span>cni:</span>
+                    <span>
+                        container network interface; supports hostPort for exposing ports on the nodes, and
+                        also traffic shaping to set the bandwidth on pod ingress and egress
+                    </span>
+                </li>
+                <br>
+                <li>
+                    <span>flannel:</span>
+                    <span>a CNI plugin that is a very simple layer 3 network fabric for Kubernetes with a minimal featureset</span>
+                </li>
+                <br>
+                <li>
+                    <span>calico:</span>
+                    <span>
+                        a CNI plugin that is highly scalable networking and network policy solution, very feature rich and
+                        conceptionally similar to the IP network traffic found on the internet between pods; it is deployed
+                        without encapsulation or overlays to provide high-performance and high-scale datacentre networking.
+                    </span>
+                </li>
+            </ul>
+
+            <p>
+                [insert summary here]
+            </p>
+        </div>
+    </body>
+</html>
