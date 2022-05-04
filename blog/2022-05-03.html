@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>
+               2022-05-03: using awslogs to send EC2 logs to CloudWatch
+            </h1>
+
+            <br>
+
+            <p>
+                CloudWatch is a convenient way to store logs in AWS, especially
+                in Cloud-centric application design.
+            </p>
+
+            <p>
+                Sometimes this may mean interacting with virtual machine
+                compute instances, such as EC2, but might also include
+                baremetal servers too.
+            </p>
+
+            <p>
+                First, ssh to the desired server and do the following and
+                obtain the awslogs agent:
+            </p>
+
+            <p class="grey_monospace_code">
+                curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O
+            </p>
+
+            <p>
+                Next run the agent install setup, and if this is an EC2 instance,
+                select a region as well using the --region flag.
+            </p>
+                
+            <p class="grey_monospace_code">
+                sudo python ./awslogs-agent-setup.py --region us-west-2
+            </p>
+                
+            <p>
+                At this point the installer might ask you a bunch of questions,
+                in particular the following.
+            </p>
+
+            <ul>
+                <li>
+                    <span>aws key:</span>
+                    <span>
+                        key from an AWS role, note that this role is required to have CloudWatch permissions
+                    </span>
+                </li>
+                <li>
+                    <span>aws secret:</span>
+                    <span>
+                        secret value from the AWS role mentioned above
+                    </span>
+                </li>
+                <li>
+                    <span>hostname:</span>
+                    <span>
+                        either the full qualified domain name or the name of the server
+                    </span>
+                </li>
+                <li>
+                    <span>datetime:</span>
+                    <span>
+                        offers multiple formats, including year-month-day or month-day
+                    </span>
+                </li>
+                <li>
+                    <span>logfile:</span>
+                    <span>
+                        path to the file to monitor and send data to CloudWatch
+                    </span>
+                </li>
+                <li>
+                    <span>position:</span>
+                    <span>
+                        either send entire log to CloudWatch from beginning or
+                        upload contents appended to end of file
+                    </span>
+                </li>
+                <li>
+                    <span>stream:</span>
+                    <span>
+                        name of the log entry in CloudWatch
+                    </span>
+                </li>
+            </ul>
+                
+            <p>
+                After all of the questions have been answer, then the awslogs
+                service will start and the contents of the log in question will
+                be sent.
+            </p>
+                
+            <p>
+                Check the status of the server using either service or systemctl:
+            </p>
+                
+            <p class="grey_monospace_code">
+                sudo service awslogs status
+                <br><br>
+                [or]
+                <br><br>
+                sudo systemctl status awslogs
+            </p>
+
+            <p>
+                Afterwards edit the awslogs config:
+            </p>
+                
+            <p class="grey_monospace_code">
+                sudo vim /var/awslogs/etc/awslogs.conf
+            </p>
+
+            <p>
+                The content of this file should resemble:
+            </p>
+                
+            <p class="grey_monospace_code">
+                [/var/log/nginx/access.log]
+                <br>
+                datetime_format = %d/%b/%Y:%H:%M:%S
+                <br>
+                file = /var/log/nginx/access.log
+                <br>
+                buffer_duration = 5000
+                <br>
+                log_stream_name = /var/log/nginx/access.log
+                <br>
+                initial_position = end_of_file
+                <br>
+                log_group_name = /aws/ec2/hostname.of.ec2
+            </p>
+
+            <p>
+                Then restart the awslogs service, using the method relevant to
+                the Linux distribution present on the EC2 instance or server;
+                typically one of these commands:
+            </p>
+                
+            <p class="grey_monospace_code">
+                sudo service awslogs restart
+                <br><br>
+                [or]
+                <br><br>
+                sudo systemctl restart awslogs
+            </p>
+
+            <p>
+                This will result in the logs being sent to AWS CloudWatch,
+                which can be found under the log group name of
+                /aws/ec2/hostname.of.ec2, with a steam name of
+                /var/log/nginx/access.log.
+            </p>
+
+        </div>
+    </body>
+</html>
