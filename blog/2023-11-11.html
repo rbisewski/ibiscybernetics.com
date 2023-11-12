@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>
+               2023-11-11: early machine learning concepts prior to transformers
+            </h1>
+
+            <br>
+
+            <p>
+                Listening to the latest buzz, you'll notice just how many
+                people are talking about artificial intelligence these days.
+                About how it could
+                <a href="https://www.youtube.com/watch?v=L_Guz73e6fw">change the world</a>
+                or maybe
+                <a href="https://www.youtube.com/watch?v=AaTRHFaaPG8">destroy everything we hold dear</a>.
+                A lot of experts seem divided on this, with some arguing AI
+                has the potential to solve many serious challenges we face
+                and others making the case that some degree of caution ought
+                to be exercised.
+            </p>
+            <p>
+                More recently, even the White House joined in on the subject
+                with an
+                <a href="https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/">Executive Order</a>
+                from the President of the United States of America; with the
+                expectation that this was a matter of vital national interest.
+            </p>
+
+            <p>
+                So how did we get here?
+            </p>
+
+            <p>
+                Well, this might sound silly, but it all starts with <a href="https://en.wikipedia.org/wiki/Axis_mundi">trees</a>.
+            </p>
+
+            <p style="text-align: center;">
+                <img src="2023-11-11/01.png" />
+            </p>
+
+            <p>
+                In particular, tree data structures. If you're familar with a
+                flow chart or binary tree, then take that idea and use as a way
+                to evaluate the possible outcomes of some situation. Then it
+                becomes what is known as a
+                <a href="https://en.wikipedia.org/wiki/Decision_tree">decision tree</a>.
+            </p>
+
+            <p>
+                Many years ago I used to work a now defunct
+                machine-learning oriented startup,
+                <a href="https://sightlineinnovation.com/">Sightline Innovations</a>,
+                where customers would present their problems to us and in turn
+                our team would translate their challenge into something that
+                ML could solve to some degree of precision. These mostly
+                involved pattern recognition systems of images or data mining
+                of large bodies of text or data.
+            </p>
+
+            <p>
+                Typically this involved software like
+                <a href="https://github.com/dmlc/xgboost">XGBoost</a>
+                which allows for the easy creation of tree-based decisioning
+                that has some very basic ability to learn. This methodology
+                is known as
+                <a href="https://en.wikipedia.org/wiki/Gradient_boosting">gradient boosting</a>.
+                This produces a data structure that when moving up or down
+                the nodes, leads to a local minimum or local maximum,
+                optimizing the function towards whatever goal was in mind;
+                e.g. is this a picture an image of a dog? Does this body
+                of literature have information related to the common types
+                of cancer?
+            </p>
+
+            <p>
+                Gradient boosting is nice but yields results that are more
+                like a refinement and very much unlike real human learning.
+                In many ways, not dissimilar to a human being reading
+                a book on Calculus and then summarizing the contents.
+            </p>
+
+            <p>
+                Whereas what you might actually want at the end of that
+                process is a human that can solve real-world problems with
+                the Calculus it learned from the book.
+            </p>
+
+            <p style="text-align: center;">
+                <img src="2023-11-11/02.png" />
+            </p>
+
+            <p>
+                So this really puts the desire into focus. We want to be able
+                toss data of any type into a machine and have it deeply
+                learn the concepts.
+                <a href="https://en.wikipedia.org/wiki/Deep_learning">Sound familar?</a>
+            </p>
+
+            <p>
+                Actually if you think about it, the most intriguing
+                aspects of a gradiented tree is two-fold:
+            </p>
+
+            <ul>
+                <li>
+                    <span>
+                        The ability to store information in chunks throughout
+                        the tree, treating information as a fuzzy membraned
+                        "layer" spread out in pieces that can be reconnected
+                        where relevant. Maybe this "connection" can work along
+                        the lines of something like a bitwise operation,
+                        almost a little like a logic gate.
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        The ability to move up and down the nodes at will,
+                        recording and altering the state as we move. So a bit
+                        like how humans have a "short term memory" that lets
+                        us memorize things for immediate use.
+                    </span>
+                </li>
+            </ul>
+
+            <p>
+                Hmm... yet with our tree concept it has to work for the
+                entire length of the path it travels. It passes by and
+                evaluates each information chunk until we get our final
+                output. Maybe even forgetting chunks along the way that
+                it determines aren't relevant and doesn't need?
+            </p>
+
+            <p>
+                So a type of "long" short term memory, if you will.
+            </p>
+
+            <p>
+                If you've ever studied the subject at all or even heard
+                about these topics briefly, you might have come across this
+                concept, to which academics and engineers cleverly call
+                <a href="https://en.wikipedia.org/wiki/Long_short-term_memory">LSTM</a>
+                because of the reasons mentioned above.
+            </p>
+
+            <p>
+                Typically the way it is implemented is as follows: 
+            </p>
+
+            <p style="text-align: center;">
+                <img src="2023-11-11/03.png" />
+            </p>
+
+            <p>
+                Cells!
+            </p>
+
+            <p>
+                Curiously enough, humanity has spent all of this effort to
+                recreate biological intelligence in a machine and the place
+                we end up at is a kind of "mathematical" cell.
+            </p>
+
+            <p>
+                A very nice and a very unexpected outcome.
+            </p>
+
+            <p>
+                Very unexpected in the sense that we thought we were just
+                optimizing a tree yet we accidentally built a cell.
+            </p>
+
+            <p>
+                Also very nice too, since this is the probably the
+                correct way to think of intelligence, or at least, closer
+                to underlying reality than our earlier misconceptions.
+            </p>
+
+            <p>
+                To recap where we are now:
+            </p>
+
+            <ul>
+                <li>
+                    <span>
+                        information can typically be simplified into a basic
+                        building block (chunk)
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        there needs to be some structure to store the chunks
+                        and how they are related (network)
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        for each chunk we encounter, we have to evaluate it
+                        to determine if we retain it or drop it (gates)
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        as we travel along the network, we need to remember
+                        what conclusion we came to (state)
+                    </span>
+                </li>
+            </ul>
+
+            <p>
+                So creating a "cell" that iterates over a network of "chunks"
+                is a pretty good improvement over climbing the ol' binary tree.
+                Doubly so if the chunks are already sorted in advance so that
+                we don't need to waste time every instant we want to start up
+                our model.
+            </p>
+
+            <p>
+                Since this sortation effectively is a hint of what direction
+                the cell might end up evaluating, we can think of it as a type
+                of "training" that the model practices on prior to us using it.
+                The larger and better and richer the training data, the more
+                likely we get the desired outcome.
+            </p>
+
+            <p>
+                We'll want that as an essential feature going forward,
+                otherwise it'll just take too long to do anything.
+            </p>
+
+            <p>
+                Okay, suppose now we got our chunks networked and trained
+                on data relevant to the topic at hand and we got a model that
+                can evaluate using gates and retain state throughtout the
+                decision path.
+            </p>
+            <p>
+                Let's try this out on a
+                <a href="https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog">simple sentence</a>
+                where we force the model trained on English literature
+                to attempt to complete this sentence and guess what the
+                words ought to be:
+            </p>
+
+            <p class="grey_monospace_code">
+                The quick brown fox __ over the lazy __.
+            </p>
+
+            <p>
+                A clever human might identify "fox" as a noun and realize that
+                whatever comes after it must be a verb, in particular, a verb
+                that makes sense in conjuction with "over". For the word "lazy"
+                the human might determine this is an adjective and thus whatever
+                word comes after it must be noun.
+            </p>
+
+            <p>
+                For our model, it begins by reading in the sentence where it
+                reads in the words and attempts to classify them based on what
+                it currently knows. Unlike the human, it may or may not know
+                what a noun or verb is (though in theory you could make do so),
+                but since it has trained on basic English sentence structure,
+                it can read through the network of chunks it has.
+            </p>
+
+            <p>
+                Say for instance the path it goes down is something like:
+            </p>
+
+            <p class="grey_monospace_code">
+                (starts)-->(sings)-->(television)-->(jumps)
+            </p>
+
+            <p>
+                As "starts over" is not syntactically wrong and is present
+                in the training text, the cell grabs that.
+            </p>
+
+            <p>
+                Then it goes to "sings" and ignores it since it is less
+                common in the data then "starts".
+            </p>
+
+            <p>
+                On to "television" and since none of the data ever has
+                "television over" present, the model continues on.
+            </p>
+
+            <p>
+                Finally the model gets to "jumps" and realizes that it is
+                even more common than "starts" so thus it retains "jumps"
+                and drops "starts", yielding a final state of "jumps".
+            </p>
+
+            <p>
+                Success, our model has figured it out!
+            </p>
+
+            <p>
+                While in theory what is presented about does work in some
+                capacity, you may notice that there are actually two problems
+                with this approach:
+            </p>
+
+            <ul>
+                <li>
+                    <span>
+                        the model spends a lot of time digging through text that
+                        roughly matches where a verb that can be used alongside
+                        the word "over" (no understanding of why certain words
+                        might be used a certain way nor even how to "prefer"
+                        certain words within a given context)
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        since it needs to know the previous word and the word
+                        that comes after, the model can only function
+                        sequentially and never in parallel (making it slow and
+                        single threaded)
+                    </span>
+                </li>
+            </ul>
+
+            <p>
+                This is bad and shows how limited an approach this all is.
+                In spite of the similarities mentioned earlier, really it
+                is very much
+                <a href="https://en.wikipedia.org/wiki/Thought">unlike how a human would think</a>.
+            </p>
+
+            <p>
+                A human would probably try to make a sort of "judgment call"
+                on how relevant a word is drawing from a pool of long-term
+                and short-term memory to "classify" where it could be used.
+                Maybe making adjustments over time as the human gets older
+                and more experienced.
+            </p>
+
+            <p>
+                This is to say that human would pay "attention"
+                to how the words would be used; both now and in the past.
+                Then they would
+                <a href="https://en.wikipedia.org/wiki/Weighting">weigh in</a>
+                based on the frequency of the word.
+            </p>
+
+            <p>
+                A sort of cognitive context or
+                <a href="https://en.wikipedia.org/wiki/Attention_(machine_learning)">attention</a>
+                if you will.
+            </p>
+
+            <p>
+                Huh, isn't that interesting?
+            </p>
+
+            <p>
+                What if we did something similar; instead of having the model
+                frequency, we'd do training on relevant datasets where the use
+                of the word was correct, and then assign a kind of "correctness"
+                score which would function as a kind of weight.
+            </p>
+
+            <p>
+                Let's try the earlier example again but this time we've trained
+                the model on a dataset and assigned a weight.
+            </p>
+
+            <p class="grey_monospace_code">
+                [(starts:2), (sings:1), (television:0), (jumps:37)]
+            </p>
+
+            <p>
+                As an optimization, no need to sequentially hop from node to
+                node. We'll dump it all into memory and for-loop through all
+                of it and spawn one thread per element or dimension.
+            </p>
+
+            <p>
+                Since we can't use "threads" in the normal sense, what we'd
+                have to do is setup a collection of cells called "neurons"
+                that would climb up and down throughout the nodes in a
+                bidirectional fashion. This would mean that output from one
+                neuron could affect the input from another, leading to
+                what might be called a
+                <a href="https://en.wikipedia.org/wiki/Recurrent_neural_network">recurrent</a>
+                state.
+            </p>
+
+            <p>
+                Like biology, cell specialization is key building complex
+                organisms.
+            </p>
+
+            <p>
+                Some of these neurons would be encoders, which is to say they
+                would start by "setting the tone" and would initialize the
+                attention context. As the model runs, the encoder might pass
+                along hints to the attention unit to ensure the newly learned
+                information that retained is the most precise information.
+            </p>
+
+            <p>
+                Other neurons would be decoders, which is to say they would
+                use the context present in the attention unit to make a
+                decision based on their present state.
+            </p>
+
+            <p>
+                Having done this, our
+                <a href="https://en.wikipedia.org/wiki/Attention_(machine_learning)#Variants">attention-enhanced model</a>
+                is suddenly both faster and parallel.
+            </p>
+
+            <p style="text-align: center;">
+                <img src="2023-11-11/04.png" />
+            </p>
+
+            <p>
+                This is great!
+            </p>
+
+            <p>
+                Mind you, storing this extra weight data does require
+                additional hard drive space, but these days, that's hardly
+                much of a concern in world where terabytes can be had for
+                mere dollars.
+            </p>
+
+            <p>
+                Also of note is that if you wanted to run this continuously
+                or needed to do an incredible volume of text or image data,
+                well, it would appear that you'd need a lot of memory. Perhaps
+                a lot of processors or GPUs too, for handling the multi-thread
+                workloads.
+            </p>
+
+            <p style="text-align: center;">
+                <img src="2023-11-11/05.png" />
+            </p>
+
+            <p>
+                Hmm... well this is kind of a bummer, but given the price and
+                performance of CPUs and GPUs continues to grow, maybe this
+                trade-off isn't so bad.
+            </p>
+
+            <p>
+                Ultimately it remains to be seen whether the supply for
+                compute is able to reach the demand for compute.
+            </p>
+
+            <p>
+                Thus, with a general lack of compute and memory availability to
+                simply handle all datasets this way, wouldn't it be great if
+                there was some way to optimize this further?
+            </p>
+
+            <p>
+                The answer lies within the idea of dimensionalizing n-grams
+                and performaning matrix transforms on these values, which is
+                to say, transformer models.
+            </p>
+
+        </div>
+    </body>
+</html>
