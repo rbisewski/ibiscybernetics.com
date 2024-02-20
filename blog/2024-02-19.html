@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Ibis Cybernetics Blog Index -->
+
+    <!-- Head begins here -->
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Ibis Cybernetics Corporation" />
+        <meta name="keywords" content="software,c,php,artwork,pixel art,robotics,cybernetics" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="Robert Bisewski" />
+
+        <!-- css -->
+        <link rel="stylesheet" href="ibis_cybernetics_blog.css">
+
+        <!-- favicon -->
+        <link href="../ibis.ico" rel="shortcut icon" type="image/x-icon" />
+
+        <!-- assign a title to this page -->
+        <title>Cyberia Blog - Ibis Cybernetics Corporation</title>
+    </head>
+
+    <!-- Body begins here -->
+    <body>
+
+        <!-- Blog entry content goes here -->
+        <div class="centre_content">
+
+            <a href="index.html">&larr; back</a>
+
+            <h1>
+               2024-02-19: using Vulkan to accelerate LLMs on AMD GPUs
+            </h1>
+
+            <br>
+
+            <p>
+                Since the
+                <a href="2023-11-11.html">last post</a> has been written,
+                there has been a few interesting developments in the world
+                of large language models.
+            </p>
+
+            <p>
+                Notably, the industry wide support of AMD GPUs continues
+                apace, with large frameworks like
+                <a href="https://pytorch.org">PyTorch</a> even
+                offering regular and up-to-date releases supporting the
+                latest versions of
+                <a href="https://en.wikipedia.org/wiki/ROCm">ROCm</a> as
+                it rapidly reaches feature parity with CUDA.
+            </p>
+
+            <p style="text-align: center;">
+                <img src="2024-02-19/01.png" />
+            </p>
+
+            <p>
+                Historically the "red team" track record was somewhat mixed,
+                with only the top and Pro-series GPUs supported, but as of
+                <a href="https://rocm.docs.amd.com/projects/radeon/en/latest/docs/compatibility.html">ROCm v6.0</a>,
+                AMD has quietly enabled this on all cards on Linux.
+            </p>
+
+            <p>
+                So if you have one, consider giving it a shot; your mileage
+                might vary of course, as many of these large language models
+                and their respective datasets are quite large and
+                may not necessarily fit in low-end consumer hardware.
+            </p>
+
+            <p>
+                Compared to even a few years ago, installation to
+                take advantage of an existing Radeon card is straightforward.
+            </p>
+
+            <p>
+                Simply create a Python venv and then activate.
+                Afterwards, install PyTorch with the desired Python wheel:
+            </p>
+
+            <p class="grey_monospace_code">
+                python -m venv ~/python_venv
+                <br>
+                <br>
+                source ~/python_venv/bin/activate
+                <br>
+                <br>
+                pip3 install --pre torch torchvision torchaudio --index-url \
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;https://download.pytorch.org/whl/nightly/rocm6.0
+            </p>
+
+            <p>
+                All done, now you can spin up llamas with ease!
+            </p>
+
+            <p style="text-align: center;">
+                <img src="2024-02-19/02.png" />
+            </p>
+
+            <p>
+                Actually many applications and frameworks support AMD now,
+                some of the more interesting ones include:
+            </p>
+
+            <ul>
+                <li>
+                    <span>
+                        <a href="https://github.com/ggerganov/llama.cpp">llama.cpp</a>
+                        - a project to run LLMs using C/C++
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        <a href="https://www.tensorflow.org/">TensorFlow</a>
+                        - the popular machine learning framework
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        <a href="https://github.com/vosen/ZLUDA">ZLUDA</a>
+                        - an emulation library to run compiled CUDA
+                        applications on AMD GPUs
+                    </span>
+                </li>
+            </ul>
+
+            <p>
+                On that note, an exciting update to the llama.cpp is the
+                recent
+                <a href="https://github.com/ggerganov/llama.cpp/pull/2059">Vulkan backend implementation project</a>
+                which attempts to "bridge the gap" and allows pretty much
+                any device with Vulkan shaders to run a LLM and on nearly
+                any modern operating system.
+            </p>
+
+            <p>
+                Potentially both Mac or Windows developers could take advantage of
+                this to run LLMs faster; as could programmers on more
+                compact or embedded platforms, such as Android phones or
+                the newer variants of the Raspberry Pi.
+            </p>
+
+            <p>
+                A more interesting aspect of the Vulkan backend is that GPU
+                shader architectures are created with parallelization in mind,
+                potentially allowing cost efficient customer hardware to run
+                large language models with a greater number of tokens per
+                second.
+            </p>
+
+            <p>
+                So with that in mind, it is worth testing this concept to
+                determine how good an idea this might be.
+            </p>
+
+            <p>
+                Two very interesting and popular models in the AI developer community, that are also
+                not-to-large in terms of parameters, are as follows:
+            </p>
+
+            <ul>
+                <li>
+                    <span>
+                        <a href="https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B">OpenHermes 2.5</a>
+                        - a data-rich varient of the excellent
+                        <a href="https://mistral.ai/news/announcing-mistral-7b/">Mistral 7B model</a>
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        <a href="https://huggingface.co/microsoft/phi-2">Phi 2</a>
+                        - an attempt by Microsoft to create a powerful yet super lightweight 2.7B model
+                    </span>
+                </li>
+            </ul>
+
+            <p>
+                For this benchmark, two simple prompts were selected:
+            </p>
+
+            <p class="grey_monospace_code">
+                Write me a python function that can read a CSV file into a Pandas DataFrame
+                <br>
+                <br>
+                Tell me about the planet Mars
+            </p>
+
+            <p>
+                The command used to start the llama.cpp server instance
+                is below, where XX was the number of layers to defer
+                to the GPU via the Vulkan backend:
+            </p>
+
+            <p class="grey_monospace_code">
+                cd llama.cpp
+                <br>
+                <br>
+                ./server -m /path/to/llm_models/name_of_model.Q8_0.gguf --n-gpu-layers XX
+            </p>
+
+            <p>
+                Since running the full LLM model itself on cost-efficent hardware
+                is unlikely to be desirable,
+                <a href="https://huggingface.co/docs/transformers/main/main_classes/quantization">8-bit quantized</a>
+                versions of these models were used. Quantized models are
+                slightly lower quality in their responses but are somewhat
+                faster and also offer a lower memory footprint; allowing
+                them to be ran on CPUs alone.
+            </p>
+
+        </div>
+    </body>
+</html>
