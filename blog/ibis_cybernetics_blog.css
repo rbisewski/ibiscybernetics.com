@@ -43,3 +43,9 @@ pre {
     margin: 0 auto 0 auto;
     width: 700px;
 }
+
+.simple_table {
+    display: inline-table;
+    width: 700px;
+    text-align: left;
+}

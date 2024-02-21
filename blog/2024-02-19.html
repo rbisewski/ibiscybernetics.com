@@ -66,12 +66,12 @@
             <p>
                 So if you have one, consider giving it a shot; your mileage
                 might vary of course, as many of these large language models
-                and their respective datasets are quite large and
+                and their respective datasets are quite big and
                 may not necessarily fit in low-end consumer hardware.
             </p>
 
             <p>
-                Compared to even a few years ago, installation to
+                Anyway, compared to even a few years ago, installation to
                 take advantage of an existing Radeon card is straightforward.
             </p>
 
@@ -93,7 +93,9 @@
             </p>
 
             <p>
-                All done, now you can spin up llamas with ease!
+                All done, now you can spin up
+                <a href="https://rocm.docs.amd.com/projects/HIP/en/latest/index.html">HIP</a>
+                llamas with ROCm!
             </p>
 
             <p style="text-align: center;">
@@ -148,7 +150,7 @@
             <p>
                 A more interesting aspect of the Vulkan backend is that GPU
                 shader architectures are created with parallelization in mind,
-                potentially allowing cost efficient customer hardware to run
+                potentially allowing cost-efficient customer hardware to run
                 large language models with a greater number of tokens per
                 second.
             </p>
@@ -205,13 +207,236 @@
             </p>
 
             <p>
-                Since running the full LLM model itself on cost-efficent hardware
+                Since running the full LLM model itself on budget hardware
                 is unlikely to be desirable,
                 <a href="https://huggingface.co/docs/transformers/main/main_classes/quantization">8-bit quantized</a>
                 versions of these models were used. Quantized models are
                 slightly lower quality in their responses but are somewhat
                 faster and also offer a lower memory footprint; allowing
                 them to be ran on CPUs alone.
+            </p>
+
+            <hr />
+
+            <p>
+                The results are presented below, with the models themselves
+                subdivided into 28 pieces and ran in parallel to generate
+                the tokens.
+            </p>
+
+            <p>
+                The scenarios begin with all 28 layers being ran on the
+                <a href="https://en.wikipedia.org/wiki/Zen_3">AMD Ryzen 7600X CPU</a>
+                and gradually with more layers added to the
+                <a href="https://en.wikipedia.org/wiki/RDNA_3">Radeon RX 7600 GPU</a>
+                used in this benchmark.
+            </p>
+
+            <p>
+                For each set of results, the prompt used during the benchmark
+                is denoted.
+            </p>
+
+            <p>
+                <p class="grey_monospace_code">
+                    Write me a python function that can read a CSV file into a Pandas DataFrame
+                </p>
+                <table class="simple_table">
+                    <tr>
+                        <th>
+                            GPU Layers
+                        </th>
+                        <th>
+                            Phi-2
+                        </th>
+                        <th>
+                            OpenHermes 2.5
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            0
+                        </td>
+                        <td>
+                            13.74 tokens/second
+                        </td>
+                        <td>
+                            5.63 tokens/second
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            8
+                        </td>
+                        <td>
+                            15.12 tokens/second
+                        </td>
+                        <td>
+                            6.62 tokens/second
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            16
+                        </td>
+                        <td>
+                            17.56 tokens/second
+                        </td>
+                        <td>
+                            8.02 tokens/second
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            24
+                        </td>
+                        <td>
+                            21.66 tokens/second
+                        </td>
+                        <td>
+                            10.89 tokens/second
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            28
+                        </td>
+                        <td>
+                            25.71 tokens/second
+                        </td>
+                        <td>
+                            13.29 tokens/second
+                        </td>
+                    </tr>
+                </table>
+            </p>
+
+            <p>
+                <p class="grey_monospace_code">
+                    Tell me about the planet Mars
+                </p>
+                <table class="simple_table">
+                    <tr>
+                        <th>
+                            GPU Layers
+                        </th>
+                        <th>
+                            Phi-2
+                        </th>
+                        <th>
+                            OpenHermes 2.5
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            0
+                        </td>
+                        <td>
+                            13.41 tokens/second
+                        </td>
+                        <td>
+                            5.62 tokens/second
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            8
+                        </td>
+                        <td>
+                            14.41 tokens/second
+                        </td>
+                        <td>
+                            6.65 tokens/second
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            16
+                        </td>
+                        <td>
+                            17.64 tokens/second
+                        </td>
+                        <td>
+                            8.00 tokens/second
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            24
+                        </td>
+                        <td>
+                            21.51 tokens/second
+                        </td>
+                        <td>
+                            10.75 tokens/second
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            28
+                        </td>
+                        <td>
+                            26.06 tokens/second
+                        </td>
+                        <td>
+                            12.35 tokens/second
+                        </td>
+                    </tr>
+                </table>
+            </p>
+
+            <hr />
+
+            <p>
+                While these are admittedly only a handful of data points,
+                I think there are some interesting conclusions here:
+            </p>
+
+            <ul>
+                <li>
+                    <span>
+                        both small models (2.7B) and larger models (7B) seem
+                        to benefit from offloading their layers to a GPU
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        note the jump in performance going from 24 to 28
+                        layers; it seems that offloading all of the layers
+                        of a model onto the GPU yields a much greater jump
+                        in tokens per second
+                    </span>
+                </li>
+                <br />
+                <li>
+                    <span>
+                        GPU offloading onto Vulkan shaders is still in the
+                        early days, at some later time, the performance gains
+                        may continue to improve
+                    </span>
+                </li>
+            </ul>
+
+            <p>
+                The sheer number of tokens per second yielded is somewhat
+                compelling and exciting. Since it may hint at much better
+                performance over the next few years, and in turn, less
+                reliance on Nvidia GPUs as the main method of running LLMs.
+            </p>
+
+            <p>
+                With that said, the resources needed to train or fine-tune
+                models will likely remain high for quite a while. This is
+                due to the nature of architecture and also the incredible
+                size of the available datasets.
+            </p>
+
+            <p>
+                Finally, in the long-term future, as compact and small-factor
+                devices such as phones improve and gain greater graphical
+                capabilities then it is very possible to imagine them running
+                models with many billions of parameters.
             </p>
 
         </div>
